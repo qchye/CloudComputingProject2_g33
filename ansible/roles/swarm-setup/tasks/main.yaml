@@ -1,0 +1,107 @@
+---
+- block:
+
+  - name: Install the Python SNI support packages.
+    package:
+      name: "{{ python_sni_support_packages }}"
+      state: present
+
+  # There extra pip dependencies are needed to add SSL SNI support to
+  # Python version prior to 2.7.9. SNI support is needed by the Ansible
+  # apt_key module.
+  - name: Install the Python SNI python-pip dependencies.
+    pip:
+      name: "{{ python_sni_pip_dependencies }}"
+      state: present
+      
+
+  when: ansible_os_family == 'Debian'
+    and ansible_python_version is version_compare('2.6.0', '>=')
+    and ansible_python_version is version_compare('2.7.9', '<')
+
+- name: Uninstall old versions of docker
+  tags: 'docker'
+  become: yes
+  apt:
+    name: ['docker', 'docker-engine', 'docker.io']
+    state: absent
+
+- name: Install dependencies
+  tags: 'docker'
+  become: yes
+  apt:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'python-setuptools', 'software-properties-common', 'gnupg']
+    state: latest
+    install_recommends: no
+    update_cache: yes
+
+- name: Add Docker apt repository key
+  tags: 'docker'
+  become: yes
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker apt repository and update apt cache
+  tags: 'docker'
+  become: yes
+  apt_repository:
+    repo: "deb https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable"
+    mode: '644'
+    update_cache: yes
+    state: present
+
+- name: Install docker
+  tags: 'docker'
+  become: yes
+  apt:
+    name: ['docker-ce']
+    state: latest
+    install_recommends: no
+    update_cache: yes
+
+- block:
+
+  - name: Create the systemd overrides directory for Docker.
+    file:
+      name: "/etc/systemd/system/docker.service.d"
+      state: directory
+
+  - name: Add the proxy settings for Docker.
+    template:
+      src: docker-proxy.conf.j2
+      dest: "/etc/systemd/system/docker.service.d/http-proxy.conf"
+    register: _docker_proxy
+
+  - name: Reload systemd and restart Docker.
+    service:
+      name: docker
+      state: "{% if docker_service_state != 'stopped' %}restarted{% else %}stopped{% endif %}"
+      daemon_reload: yes
+    when: _docker_proxy.changed
+
+  when: docker_proxy | length > 0
+    and ansible_service_mgr == 'systemd'
+
+- name: Install the Docker CLI.
+  package:
+    name: "{{ docker_cli_package_name }}{{ _docker_cli_package_version | default('') }}"
+    state: "{{ docker_cli_package_state }}"
+
+# Setup the Docker Swarm Cluster
+- block:
+  - include_tasks: setup-swarm-cluster.yaml
+  # - include_tasks: setup-swarm-labels.yml
+
+- name: Install docker-py.
+  pip:
+    name: "{{ docker_py_package_name }}"
+    version: "{{ docker_py_package_version }}"
+    state: "{{ docker_py_package_state }}"
+
+- name: Install docker-compose
+  tags: 'docker'
+  become: yes
+  pip:
+    name: ['docker-compose']
+    state: latest

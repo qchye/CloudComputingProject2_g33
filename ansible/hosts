@@ -1,0 +1,14 @@
+[SWARM]
+
+
+[docker_engine]
+
+[docker_swarm_manager]
+
+[docker_swarm_worker]
+
+[SWARM:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/uni/assignment_2
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+ansible_python_interpreter=/usr/bin/python3

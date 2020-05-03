@@ -1,0 +1,22 @@
+- hosts: localhost
+  vars_files:
+    - host_vars/nectar.yaml
+  gather_facts: true
+
+  roles:
+    # - role: openstack-common
+    - role: openstack-volume
+    - role: openstack-security-group
+    - role: openstack-instance
+
+- hosts: SWARM
+  vars_files:
+    - host_vars/analyser.yaml
+  gather_facts: true
+  become: yes
+
+  roles:
+    - role: analyser-common
+    - role: swarm-volumes
+    - role: swarm-setup
+
