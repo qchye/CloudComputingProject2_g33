@@ -3,14 +3,20 @@ availability_zone: melbourne-qh2-uom
 
 # Volume
 volumes:
-  - vol_name: assignment2-vol-1
-    vol_size: 10
-  - vol_name: assignment2-vol-2
-    vol_size: 10
-  - vol_name: assignment2-vol-3
-    vol_size: 10
-  - vol_name: assignment2-vol-4
-    vol_size: 10
+  - vol_name: instance1-docker-vol
+    vol_size: 5
+  - vol_name: instance1-couch-db-vol
+    vol_size: 76
+  - vol_name: instance2-docker-vol
+    vol_size: 5
+  - vol_name: instance2-couch-db-vol
+    vol_size: 76
+  - vol_name: instance3-docker-vol
+    vol_size: 5
+  - vol_name: instance3-couch-db-vol
+    vol_size: 76
+  - vol_name: instance4-docker-vol
+    vol_size: 7
 
 # Security group
 security_groups:
@@ -22,7 +28,7 @@ security_groups:
         port_range_max: 22
         remote_ip_prefix: 0.0.0.0/0
   - name: nginx_test
-    description: "Security group for SSH access"
+    description: "Security group for nginx access"
     sg_rules:
       - protocol: tcp
         port_range_min: 8080
@@ -51,13 +57,17 @@ security_groups:
 # Instance
 instances:
   - name: swarm-01
-    volumes: ['assignment2-vol-1']
+    volumes: ['instance1-docker-vol', 'instance1-couch-db-vol']
   - name: swarm-02
-    volumes: ['assignment2-vol-2']
+    volumes: ['instance2-docker-vol', 'instance2-couch-db-vol']
+  - name: swarm-03
+    volumes: ['instance3-docker-vol', 'instance3-couch-db-vol' ]
+  - name: swarm-04
+    volumes: ['instance4-docker-vol']
 
 instance_image: 45225edb-66d8-4fd0-bf41-132a31a18166
 instance_key_name: assignment_2
 instance_flavor: uom.mse.1c4g
 instance_network: qh2-uom-internal
 
-docker_swarm_managers: 2
+docker_swarm_managers: 1
