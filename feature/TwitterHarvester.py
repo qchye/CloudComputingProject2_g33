@@ -16,25 +16,27 @@ def mainFunction(api, query, count, language, region):
 
     totalExplored = 0
     totalUsefulTweets = 0
-    for tweet in tweepy.Cursor(api.search, q=query, count=count, lang=language).items():
+    for keyword in query:
+        print("Key word currently being searched: %s"%keyword)
+        for tweet in tweepy.Cursor(api.search, q=[keyword], count=count, lang=language).items():
 
-        tweet_json = tweet._json
-        totalExplored += 1
-        print(tweet_json)
-        #We only interested the tweets in Australia and keyword in text
-        if CheckTwitter(tweet_json,query,region):
-            totalUsefulTweets += 1
-            #Tweets storing process here, waiting for CouchDb
+            tweet_json = tweet._json
+            totalExplored += 1
+            print(tweet_json)
+            #We only interested the tweets in Australia and keyword in text
+            if CheckTwitterLocation(tweet_json, region):
+                totalUsefulTweets += 1
+                #Tweets storing process here, waiting for CouchDb
 
-            print("==================================FINDING FRIENDS OF USER STARTS=============================================================================")
-            #Finding Friends of friends section
-            user=tweet_json['user']
-            user_id = user['id']
-            friendsIdList = searchFriends(api, user_id)
-            totalExplored, totalUsefulTweets = ProcessRelatedTweets(api, friendsIdList, query, region, totalExplored, totalUsefulTweets)
+                print("==================================FINDING FRIENDS OF USER STARTS=============================================================================")
+                #Finding Friends of friends section
+                user=tweet_json['user']
+                user_id = user['id']
+                friendsIdList = searchFriends(api, user_id)
+                totalExplored, totalUsefulTweets = ProcessRelatedTweets(api, friendsIdList, query, region, totalExplored, totalUsefulTweets)
         
-        print("Total Explored: %d"%totalExplored)
-        print("Total Useful Tweets: %d"%totalUsefulTweets)
+            print("Total Explored: %d"%totalExplored)
+            print("Total Useful Tweets: %d"%totalUsefulTweets)
 
     return 
 
@@ -57,7 +59,7 @@ def ProcessRelatedTweets(api,friendsIdList, query, region, totalExplored, totalU
                 totalExplored += 1
                 tweet_json = tweet._json
                 #print(tweet_json)
-                if CheckTwitter(tweet_json,query,region):
+                if CheckFriendsTwitter(tweet_json,query,region):
                     totalUsefulTweets += 1
                 print("Total Explored: %d"%totalExplored)
                 print("Total Useful Tweets: %d"%totalUsefulTweets)
@@ -66,21 +68,41 @@ def ProcessRelatedTweets(api,friendsIdList, query, region, totalExplored, totalU
 
     return (totalExplored, totalUsefulTweets)
 
-#filter tweets: only the one match both region and keywords will be returned
-def CheckTwitter(tweet,keywords,region):
+#filter tweets: only the one match region
+def CheckTwitterLocation(tweet, region):
     useful = False
-    text=tweet['text']
-    place=tweet['place']
+    text = tweet['text']
+    place = tweet['place']
     if place != None:
-        loc=place['country_code']
+        loc = place['country_code']
     else:
-        user=tweet['user']
-        location=user['location']
-        loc=location.split(',')[0]
-    for w in keywords:
-        if search(w.lower(), text.lower()) and loc in region:
-            useful = True
-            break
+        user = tweet['user']
+        location = user['location']
+        loc = location.split(',')[0]
+
+    if (loc in region):
+        print("found xD")
+        useful = True
+
+    return useful
+
+#As going into friend's list, need to check all keywords
+def CheckFriendsTwitter(tweet, query, region):
+    useful = False
+    text = tweet['text']
+    place = tweet['place']
+    if place != None:
+        loc = place['country_code']
+    else:
+        user = tweet['user']
+        location = user['location']
+        loc = location.split(',')[0]
+
+    if (loc in region):
+        for w in query:
+            if w.lower() in text.lower():
+                print("found xD")
+                useful = True
 
     return useful
 
@@ -89,8 +111,8 @@ def main():
     auth = tweepy.AppAuthHandler("X7zGj3Ow4bPu05Em8WGGsko3G", "VkYgRxRkid5Ru4cpU7QineZIK2icnpRIHpZpVGaH8RlSYCJIQG")
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
     region=['Melbourne','Sydney','Quensland','Australia','Western Australia','South Australia','Victoria']
-    keywords=['ubereats']
-    region=['AU','Melbourne','Sydney','Quensland','Australia','Western Australia','South Australia','Victoria']
+    keywords=['uber', 'airtasker', 'freelancer', 'deliveroo']
+    region=['AU','Melbourne','Sydney','Queensland','Australia','Western Australia','South Australia','Victoria']
     count = 10000
     language = 'en'
     mainFunction(api, keywords, count, language, region)
