@@ -110,8 +110,7 @@ def main():
 
     auth = tweepy.AppAuthHandler("X7zGj3Ow4bPu05Em8WGGsko3G", "VkYgRxRkid5Ru4cpU7QineZIK2icnpRIHpZpVGaH8RlSYCJIQG")
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-    region=['Melbourne','Sydney','Quensland','Australia','Western Australia','South Australia','Victoria']
-    keywords=['uber', 'airtasker', 'freelancer', 'deliveroo']
+    keywords=['uber', 'airtasker', 'freelancer', 'deliveroo','hungrypanda']
     region=['AU','Melbourne','Sydney','Queensland','Australia','Western Australia','South Australia','Victoria']
     count = 10000
     language = 'en'
