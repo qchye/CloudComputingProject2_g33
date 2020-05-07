@@ -1,11 +1,10 @@
-import time
 import tweepy
 import json
-from re import search
 
 # Tweepy
 # SEARCH API
 # Search result based on query given, giving tweets, check tweets condition
+
 
 def mainFunction(api, query, count, language, region):
 
@@ -116,8 +115,14 @@ def main():
     api = tweepy.API(auth, wait_on_rate_limit=True,
                      wait_on_rate_limit_notify=True)
     keywords = ['airbnb', 'stayz', 'zomato', 'deliveroo', 'hungrypanda',
-                'lyft', 'olacab', '#grab', 'grabcar', 'didirider', 'menulog', 'taxify', 'etsy', 'gumtree', 'fiverr', 'cookitoo', 'uber', 'expedia', 'airtasker', 'freelancer', 'parkhound', 'campspace',
-                'upwork', 'designcrowd', 'ratesetter', 'urbansitter', 'airly', 'gocatch', 'shebah', 'bellhops', 'channel40', 'freightmatch', 'wrappli', 'zoom2u', 'carnextdoor', 'camplify', 'kindershare', 'quipmo', 'thevolte', 'bettercaring', '#blys', 'classbento', 'helpling']
+                'lyft', 'olacab', '#grab', 'grabcar', 'didirider', 'menulog',
+                'taxify', 'etsy', 'gumtree', 'fiverr', 'cookitoo', 'uber',
+                'expedia', 'airtasker', 'freelancer', 'parkhound', 'campspace',
+                'upwork', 'designcrowd', 'ratesetter', 'urbansitter', 'airly',
+                'gocatch', 'shebah', 'bellhops', 'channel40', 'freightmatch',
+                'wrappli', 'zoom2u', 'carnextdoor', 'camplify', 'kindershare',
+                'quipmo', 'thevolte', 'bettercaring', '#blys', 'classbento',
+                'helpling']
     region = ['AU', 'Melbourne', 'Sydney', 'Queensland', 'Australia',
               'Western Australia', 'South Australia', 'Victoria']
     count = 10000
