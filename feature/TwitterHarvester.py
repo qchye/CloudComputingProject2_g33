@@ -4,15 +4,8 @@ import json
 from re import search
 
 # Tweepy
-# Instead of using OAuthHandler, use AppAuthHandler (apprently can search more tweets and request more, dont know how but it is the case)
-# auth = tweepy.OAuthHandler("X7zGj3Ow4bPu05Em8WGGsko3G",
-# "VkYgRxRkid5Ru4cpU7QineZIK2icnpRIHpZpVGaH8RlSYCJIQG")
-# auth.set_access_token("1252170312889675777-tpP7OT9dstwFphXrF6PNyjWjJEGz22",
-#  "2jJj69FgFr50w3MBt1yL6CUu97mgcffFac3rDpEuN5VYw")
-
 # SEARCH API
 # Search result based on query given, giving tweets, check tweets condition
-
 
 def mainFunction(api, query, count, language, region):
 
