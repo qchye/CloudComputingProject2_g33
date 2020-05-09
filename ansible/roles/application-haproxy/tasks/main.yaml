@@ -20,7 +20,7 @@
     --mode replicated 
     --replicas 1 
     --name haproxy-service  
-    --publish published={{ ha_proxy_port_couchdb }},target=80,protocol=tcp,mode=ingress 
+    --publish published={{ ha_proxy_port_couchdb }},target={{ ha_proxy_port_couchdb }},protocol=tcp,mode=ingress 
     --mount type=bind,src={{ haproxy_path }}/haproxy.cfg,dst=/usr/local/etc/haproxy/haproxy.cfg,ro=true
     --constraint node.labels.type==backend
     haproxy:latest"
