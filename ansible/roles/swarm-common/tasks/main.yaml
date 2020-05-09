@@ -12,15 +12,17 @@
       http_proxy=http://wwwproxy.unimelb.edu.au:8000/
       https_proxy=http://wwwproxy.unimelb.edu.au:8000/
       no_proxy=localhost,127.0.0.1,localaddress,172.16.0.0/12,.melbourne.rc.nectar.org.au,.storage.unimelb.edu.au,.cloud.unimelb.edu.au
+  register: blockin_file
 
 - name: Reboot Machine
   reboot:
     reboot_timeout: 1800
+  when: blockin_file.changed
 
 - name: Install dependencies
   tags: always
   apt:
-    name: ['apt-transport-https', 'build-essential', 'ca-certificates', 'curl', 'git', 'python3-dev', 'python3-pip', 'python3-setuptools', 'software-properties-common']
+    name: ['apt-transport-https', 'build-essential', 'ca-certificates', 'curl', 'git', 'gnupg', 'python3-dev', 'python3-pip', 'python3-setuptools', 'software-properties-common']
     state: latest
     install_recommends: no
     update_cache: yes

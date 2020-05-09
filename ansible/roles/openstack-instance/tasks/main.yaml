@@ -31,25 +31,64 @@
   loop: '{{ os_instance.results }}'
   when: item.openstack is defined
 
+- name: Manager Node List    
+  set_fact:
+    manager_nodes: "{{ manager_nodes + [ os_instance.results[item|int] ] }}"
+  with_sequence: start=0 end={{ swarm_managers_count - 1 }}
+
+- name: Worker Node List    
+  set_fact:
+    worker_nodes: "{{ worker_nodes + [ os_instance.results[item|int] ] }}"
+  with_sequence: start={{ swarm_managers_count }} end={{ os_instance.results|length - 1 }}
+
+- name: Backend Node List    
+  set_fact:
+    backend_nodes: "{{ backend_nodes + [ os_instance.results[item|int] ] }}"
+  with_sequence: start=0 end={{ backend_nodes_count - 1 }}
+
+- name: Frontend Node List    
+  set_fact:
+    frontend_nodes: "{{ frontend_nodes + [ os_instance.results[item|int] ] }}"
+  with_sequence: start={{ backend_nodes_count }} end={{ os_instance.results|length - 1 }}
+
 # Add hosts to Ansible in-memory inventory
-- name: Add host
+- name: Add host SWARM Manager
   add_host:
     name: '{{ item.openstack.public_v4 }}'
     groups: 
       - SWARM
       - docker_engine
       - docker_swarm_manager
-  loop: '{{ os_instance.results }}'
+  loop: '{{ manager_nodes }}'
   when: "item.openstack is defined
-    and ( groups['docker_swarm_manager'] | length ) < swarm_managers_count"
+    and ( groups['docker_swarm_manager']|length < swarm_managers_count)"
 
-- name: Add host
+- name: Add host SWARM Worker
   add_host:
     name: '{{ item.openstack.public_v4 }}'
     groups: 
       - SWARM
       - docker_engine
       - docker_swarm_worker
-  loop: '{{ os_instance.results }}'
-  when: "item.openstack is defined 
-    and ( groups['docker_swarm_manager'] | length ) >= swarm_managers_count"
+  loop: '{{ worker_nodes }}'
+  when: "item.openstack is defined"
+
+- name: Add host Backend
+  add_host:
+    name: '{{ item.openstack.public_v4 }}'
+    groups: 
+      - backend_nodes
+  loop: '{{ backend_nodes }}'
+  when: "item.openstack is defined"
+
+- name: Add host Frontend
+  add_host:
+    name: '{{ item.openstack.public_v4 }}'
+    groups: 
+      - frontend_nodes
+  loop: '{{ frontend_nodes }}'
+  when: "item.openstack is defined" 
+
+- name: inventory file
+  debug:
+    msg: Group Master {{ groups['docker_swarm_manager'] }} \n Group Worker {{ groups['docker_swarm_worker'] }} \n Group Backend {{ groups['backend_nodes'] }} \n Group Frontend {{ groups['frontend_nodes'] }}

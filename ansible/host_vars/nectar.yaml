@@ -27,8 +27,8 @@ security_groups:
         port_range_min: 22
         port_range_max: 22
         remote_ip_prefix: 0.0.0.0/0
-  - name: nginx_test
-    description: "Security group for nginx access"
+  - name: ha_proxy
+    description: "Security group for HA-Proxy access"
     sg_rules:
       - protocol: tcp
         port_range_min: 8080
@@ -71,3 +71,8 @@ instance_flavor: uom.mse.1c4g
 instance_network: qh2-uom-internal
 
 swarm_managers_count: 1
+backend_nodes_count: 3
+manager_nodes: []
+worker_nodes: []
+frontend_nodes: []
+backend_nodes: []

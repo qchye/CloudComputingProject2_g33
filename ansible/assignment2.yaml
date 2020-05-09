@@ -11,12 +11,21 @@
 
 - hosts: SWARM
   vars_files:
-    - host_vars/analyser.yaml
+    - host_vars/docker-swarm.yaml
   gather_facts: true
   become: yes
 
   roles:
-    - role: analyser-common
+    - role: swarm-common
     - role: swarm-volumes
     - role: swarm-setup
+
+- hosts: SWARM
+  vars_files:
+    - host_vars/applications.yaml
+  gather_facts: true
+  become: yes
+
+  roles:
+    - role: application-haproxy
 

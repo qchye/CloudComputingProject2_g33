@@ -1,0 +1,7 @@
+##
+# HA-Proxy
+##
+
+ha_proxy_port_couchdb: 8080
+haproxy_path: "/opt/haproxy"
+couchdb_port: 5984
