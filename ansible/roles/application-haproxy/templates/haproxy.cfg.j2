@@ -28,5 +28,5 @@ backend couchdbs
         option httpchk GET /_up
         http-check disable-on-404
         {% for server_ip in servers_to_deploy %}
-server couchdb{{ loop.index }} {{ server_ip }}:{{ ha_proxy_port_couchdb }} check inter 5s
+server couchdb{{ loop.index }} {{ server_ip }}:{{ couchdb_port }} check inter 5s
         {% endfor %}
