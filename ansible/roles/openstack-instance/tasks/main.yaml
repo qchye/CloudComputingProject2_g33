@@ -40,9 +40,8 @@
       - docker_engine
       - docker_swarm_manager
   loop: '{{ os_instance.results }}'
-  when: 
-    - item.openstack is defined
-    - ( groups['docker_swarm_manager'] | length ) < docker_swarm_managers
+  when: "item.openstack is defined
+    and ( groups['docker_swarm_manager'] | length ) < swarm_managers_count"
 
 - name: Add host
   add_host:
@@ -52,6 +51,5 @@
       - docker_engine
       - docker_swarm_worker
   loop: '{{ os_instance.results }}'
-  when: 
-    - item.openstack is defined
-    - ( groups['docker_swarm_manager'] | length ) >= docker_swarm_managers
+  when: "item.openstack is defined 
+    and ( groups['docker_swarm_manager'] | length ) >= swarm_managers_count"

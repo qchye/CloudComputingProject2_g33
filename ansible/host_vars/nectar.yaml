@@ -70,4 +70,4 @@ instance_key_name: assignment_2
 instance_flavor: uom.mse.1c4g
 instance_network: qh2-uom-internal
 
-docker_swarm_managers: 1
+swarm_managers_count: 1

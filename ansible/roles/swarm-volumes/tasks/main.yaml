@@ -17,6 +17,7 @@
   when: item.device is defined
   with_items:
     - "{{ volumes }}"
+  ignore_errors: yes
 
 - name: Checking folders
   tags: 'volumes'
@@ -26,6 +27,7 @@
   register: directory_stats
   with_items:
     - "{{ volumes }}"
+  ignore_errors: yes
 
 - name: Create directory
   tags: 'volumes'
@@ -37,6 +39,7 @@
   when: item.stat.exists == false
   with_items:
     - "{{ directory_stats.results }}"
+  ignore_errors: yes
 
 - name: Mount device
   tags: 'volumes'
@@ -49,3 +52,4 @@
   when: item.device is defined
   with_items:
     - "{{ volumes }}"
+  ignore_errors: yes
