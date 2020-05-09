@@ -1,5 +1,20 @@
 # General
 .DS_Store
-.vs
-__MACOSX
-__pycache__
+
+# Python specific
+
+# Byte-compiled / optimized / DLL files
+feature/__MACOSX/*
+feature/__pycache__/*
+feature/*.py[cod]
+feature/*$py.class
+feature/.vs/*
+
+# Distribution / packaging
+feature/.Python
+feature/build/
+feature/develop-eggs/
+
+# Flask :
+feature/instance/
+feature/.webassets-cache
