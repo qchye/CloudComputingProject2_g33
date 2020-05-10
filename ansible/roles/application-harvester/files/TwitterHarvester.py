@@ -1,5 +1,6 @@
 import tweepy
 import json
+import couchdb_requests
 
 # Tweepy
 # SEARCH API
@@ -127,8 +128,11 @@ def main():
               'Western Australia', 'South Australia', 'Victoria']
     count = 10000
     language = 'en'
+    variables = {}
     mainFunction(api, keywords, count, language, region)
-
+    with open('variables.json') as json_file:
+        variables = json.load(json_file)
+    couchdb_requests.couchdb_test(variables)
     return
 
 

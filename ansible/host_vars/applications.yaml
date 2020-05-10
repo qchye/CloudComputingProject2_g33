@@ -1,7 +1,23 @@
 ##
+# Common
+#
+
+service_env_vars: "--env https_proxy=${https_proxy} --env http_proxy=${http_proxy} --env no_proxy=${no_proxy}"
+
+##
 # HA-Proxy
 ##
 
 ha_proxy_port_couchdb: 8080
 haproxy_path: "/opt/haproxy"
 couchdb_port: 5984
+
+##
+# Harvester
+##
+
+harvester_path: "/opt/harvester"
+swarm_manager_ip: "{{ groups['docker_swarm_manager'][0] }}"
+harvester_sa_username: "admin"
+harvester_sa_password: "admin"
+harvester_build_proxy: "http://wwwproxy.unimelb.edu.au:8000/"

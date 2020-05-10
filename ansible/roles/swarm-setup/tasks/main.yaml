@@ -37,7 +37,7 @@
     update_cache: yes
 
 - block:
-
+  
   - name: Create the systemd overrides directory for Docker.
     file:
       name: "/etc/systemd/system/docker.service.d"
@@ -49,12 +49,25 @@
       dest: "/etc/systemd/system/docker.service.d/http-proxy.conf"
     register: _docker_proxy
 
+  - name: Create docker client directory
+    become: yes
+    file:
+      path: "{{ docker_client_directory }}"
+      recurse: yes
+      state: directory
+  
+  - name: Add the proxy settings for docker client.
+    template:
+      src: docker-client.json.j2
+      dest: "{{ docker_client_directory }}/config.json"
+    register: _docker_proxy_client
+
   - name: Reload systemd and restart Docker.
     service:
       name: docker
       state: "{% if docker_service_state != 'stopped' %}restarted{% else %}stopped{% endif %}"
       daemon_reload: yes
-    when: _docker_proxy.changed
+    when: _docker_proxy.changed or _docker_proxy_client.changed
 
   when: docker_proxy | length > 0
     and ansible_service_mgr == 'systemd'

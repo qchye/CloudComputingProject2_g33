@@ -23,5 +23,6 @@
     --publish published={{ ha_proxy_port_couchdb }},target={{ ha_proxy_port_couchdb }},protocol=tcp,mode=ingress 
     --mount type=bind,src={{ haproxy_path }}/haproxy.cfg,dst=/usr/local/etc/haproxy/haproxy.cfg,ro=true
     --constraint node.labels.type==backend
+    {{ service_env_vars }}
     haproxy:latest"
   when: "inventory_hostname == groups['docker_swarm_manager'][0]"
