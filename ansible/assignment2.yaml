@@ -1,0 +1,46 @@
+# - hosts: localhost
+#   vars_files:
+#     - host_vars/nectar.yaml
+#   gather_facts: true
+
+#   roles:
+#     # - role: openstack-common
+#     - role: openstack-volume
+#     - role: openstack-security-group
+#     - role: openstack-instance
+
+# - hosts: SWARM
+#   vars_files:
+#     - host_vars/docker-swarm.yaml
+#   gather_facts: true
+#   become: yes
+
+#   roles:
+#     - role: swarm-common
+#     - role: swarm-volumes
+#     - role: swarm-setup
+
+# - hosts: SWARM
+#   vars_files:
+#     - host_vars/applications.yaml
+#   gather_facts: true
+#   become: yes
+
+#   roles:
+#     - role: application-haproxy
+
+- hosts: SWARM
+  vars_files:
+    - host_vars/applications.yaml
+  gather_facts: true
+  become: yes
+
+  roles:
+    - role: application-haproxy
+      tags:
+        - haproxy
+    - role: application-harvester
+      tags: 
+        - harvester
+    - role: application-couchdb
+

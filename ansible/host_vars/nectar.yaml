@@ -1,0 +1,93 @@
+# Common vars
+availability_zone: melbourne-qh2-uom
+
+# Volume
+volumes:
+  - vol_name: instance1-docker-vol
+    vol_size: 5
+  - vol_name: instance1-couch-db-vol
+    vol_size: 76
+  - vol_name: instance2-docker-vol
+    vol_size: 5
+  - vol_name: instance2-couch-db-vol
+    vol_size: 76
+  - vol_name: instance3-docker-vol
+    vol_size: 5
+  - vol_name: instance3-couch-db-vol
+    vol_size: 76
+  - vol_name: instance4-docker-vol
+    vol_size: 7
+
+# Security group
+security_groups:
+  - name: assignment2_ssh
+    description: "Security group for SSH access"
+    sg_rules:
+      - protocol: tcp
+        port_range_min: 22
+        port_range_max: 22
+        remote_ip_prefix: 0.0.0.0/0
+  - name: ha_proxy
+    description: "Security group for HA-Proxy access"
+    sg_rules:
+      - protocol: tcp
+        port_range_min: 8080
+        port_range_max: 8080
+        remote_ip_prefix: 0.0.0.0/0
+  - name: CouchDB
+    description: "Security group for CouchDB"
+    sg_rules:
+      - protocol: tcp
+        port_range_min: 5984
+        port_range_max: 5984
+        remote_ip_prefix: 0.0.0.0/0
+      - protocol: tcp
+        port_range_min: 4369
+        port_range_max: 4369
+        remote_ip_prefix: 0.0.0.0/0
+      - protocol: tcp
+        port_range_min: 9100
+        port_range_max: 9100
+        remote_ip_prefix: 0.0.0.0/0
+  - name: docker_swarm
+    description: "Security group for Docker Swarm"
+    sg_rules:
+      - protocol: tcp
+        port_range_min: 2376
+        port_range_max: 2377
+        remote_group: docker_swarm
+      - protocol: tcp
+        port_range_min: 7946
+        port_range_max: 7946
+        remote_group: docker_swarm
+      - protocol: udp
+        port_range_min: 7946
+        port_range_max: 7946
+        remote_group: docker_swarm
+      - protocol: udp
+        port_range_min: 4789
+        port_range_max: 4789
+        remote_group: docker_swarm
+
+# Instance
+instances:
+  - name: swarm-01
+    volumes: ['instance1-docker-vol', 'instance1-couch-db-vol']
+  - name: swarm-02
+    volumes: ['instance2-docker-vol', 'instance2-couch-db-vol']
+  - name: swarm-03
+    volumes: ['instance3-docker-vol', 'instance3-couch-db-vol' ]
+  - name: swarm-04
+    volumes: ['instance4-docker-vol']
+
+instance_image: 45225edb-66d8-4fd0-bf41-132a31a18166
+instance_key_name: assignment_2
+instance_flavor: uom.mse.1c4g
+instance_network: qh2-uom-internal
+
+swarm_managers_count: 3
+backend_nodes_count: 3
+manager_nodes: []
+worker_nodes: []
+frontend_nodes: []
+backend_nodes: []

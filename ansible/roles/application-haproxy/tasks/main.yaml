@@ -1,0 +1,28 @@
+- name: Create directory
+  become: yes
+  file:
+    path: "{{ haproxy_path }}"
+    recurse: yes
+    state: directory
+
+- name: Copy haproxy config to backend hosts
+  template:
+    src: "haproxy.cfg.j2"
+    dest: "{{ haproxy_path }}/haproxy.cfg"
+    mode: '0755'
+  vars: 
+    servers_to_deploy: "{{ groups['backend_nodes'] }}"
+  when: " 'backend_nodes' in group_names"
+
+- name: Create Docker service for HA Proxy 
+  become: yes
+  command: "docker service create 
+    --mode replicated 
+    --replicas 1 
+    --name haproxy-service  
+    --publish published={{ ha_proxy_port_couchdb }},target={{ ha_proxy_port_couchdb }},protocol=tcp,mode=ingress 
+    --mount type=bind,src={{ haproxy_path }}/haproxy.cfg,dst=/usr/local/etc/haproxy/haproxy.cfg,ro=true
+    --constraint node.labels.type==backend
+    {{ service_env_vars }}
+    haproxy:latest"
+  when: "inventory_hostname == groups['docker_swarm_manager'][0]"

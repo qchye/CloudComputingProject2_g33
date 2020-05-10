@@ -1,0 +1,17 @@
+# Python specific
+
+# Byte-compiled / optimized / DLL files
+__MACOSX/*
+__pycache__/*
+*.py[cod]
+*$py.class
+.vs/*
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+
+# Flask :
+instance/
+.webassets-cache
