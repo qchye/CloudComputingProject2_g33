@@ -1,0 +1,23 @@
+- name: Pull CouchDB Image
+  docker_image:
+    name: ibmcom/couchdb3:3.0.0
+
+- name: Create directory
+  become: yes
+  file:
+    path: "{{ couchdb_path }}"
+    recurse: yes
+    state: directory
+
+
+- name: Setup the shell commands
+  template:
+    src: "setup-couch.sh.j2"
+    dest: "/opt/setup-couch.sh.j2"
+    mode: '0755'
+  when: "inventory_hostname == groups['docker_swarm_manager'][0]"
+
+- name: Create the cluster
+  become: yes
+  command: sh /opt/setup-couch.sh 
+  when: "inventory_hostname == groups['docker_swarm_manager'][0]"
