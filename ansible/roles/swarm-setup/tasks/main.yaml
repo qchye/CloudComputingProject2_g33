@@ -95,7 +95,7 @@
     state: latest
 
 - name: Assign labels to swarm nodes if any.
-  command: docker node update --label-add type=backend {{ ansible_hostname|lower }}
+  command: docker node update --label-add type=backend --label-add ip={{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}} {{ ansible_hostname|lower }}
   when: " 'backend_nodes' in group_names"
   delegate_to: "{{ groups['docker_swarm_manager'][0] }}"
   delegate_facts: true

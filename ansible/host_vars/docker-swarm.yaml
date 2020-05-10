@@ -18,7 +18,7 @@ python_sni_support_packages:
 ##
 
 # Add the Unimelb proxy to the docker service to ensure
-# imaged can be pulled from the Internet
+# images can be pulled from the Internet
 docker_proxy: |
   [Service]
   Environment="HTTP_PROXY=http://wwwproxy.unimelb.edu.au:8000/" 

@@ -1,18 +1,13 @@
 [SWARM]
-172.26.133.111
-172.26.134.30
-172.26.133.56
 
 [docker_engine]
 
 [docker_swarm_manager]
-172.26.133.111
+
 [docker_swarm_worker]
 
 [backend_nodes]
-172.26.133.111
-172.26.134.30
-172.26.133.56
+
 [frontend_nodes]
 
 [SWARM:vars]
