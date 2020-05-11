@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="jumbotron text-center">
+    <h1>Welcome To Gig Economy World</h1>
+    <p class="lead">This application is built to analyse the relationship between occurance of gig economy related tweets to employment rate for states in Australia.</p>
+</div>
+<div class="row" style="margin-left: 0px; margin-right: 0px;">
+    <div class="form-group">
+
+        <label>Select a topic you are interested in: </label>
+        <div class="row">
+            <div class="col-lg-10">
+                <select class="form-control" id="selectedOption">
+                    <option value="1">Ubereats</option>
+                    <option value="2">Airbnb</option>
+                </select>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
