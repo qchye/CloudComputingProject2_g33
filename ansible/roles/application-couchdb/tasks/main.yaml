@@ -12,12 +12,18 @@
 
 - name: Setup the shell commands
   template:
-    src: "setup-couch.sh.j2"
-    dest: "/opt/setup-couch.sh.j2"
+    src: "create-service.sh.j2"
+    dest: "/create-service.sh"
     mode: '0755'
+  vars: 
+    servers: "{{ groups['backend_nodes'] }}"
+    couch_size: "{{cluster_size}}"
+    masternode: "{{ groups['backend_nodes'][0] }}"
+    other_nodes: "{{ groups['backend_nodes'][1:couch_size] }}"
+    path: "{{couchdb_path}}"
   when: "inventory_hostname == groups['docker_swarm_manager'][0]"
 
 - name: Create the cluster
   become: yes
-  command: sh /opt/setup-couch.sh 
+  command: bash /create-service.sh 
   when: "inventory_hostname == groups['docker_swarm_manager'][0]"
