@@ -1,12 +1,12 @@
 import tweepy
 import json
+import re
 import couchdb_requests
+
 
 # Tweepy
 # SEARCH API
 # Search result based on query given, giving tweets, check tweets condition
-
-
 def mainFunction(api, query, count, language, region):
 
     totalExplored = 0
@@ -17,9 +17,8 @@ def mainFunction(api, query, count, language, region):
 
             tweet_json = tweet._json
             totalExplored += 1
-            print(tweet_json)
             # We only interested the tweets in Australia and keyword in text
-            if CheckTwitterLocation(tweet_json, region):
+            if CheckTwitter(tweet_json, keyword, region):
                 totalUsefulTweets += 1
                 # Tweets storing process here, waiting for CouchDb
 
@@ -44,9 +43,8 @@ def searchFriends(api, target):
 
     return friendsIDList
 
+
 # Finding friends' timeline tweets, also check if the tweets is useful, and record accordingly
-
-
 def ProcessRelatedTweets(api, friendsIdList, query, region, totalExplored, totalUsefulTweets):
 
     for Id in friendsIdList:
@@ -66,32 +64,35 @@ def ProcessRelatedTweets(api, friendsIdList, query, region, totalExplored, total
 
     return (totalExplored, totalUsefulTweets)
 
-# filter tweets: only the one match region
 
-
-def CheckTwitterLocation(tweet, region):
-    useful = False
-    text = tweet['text']
-    place = tweet['place']
-    if place != None:
-        loc = place['country_code']
-    else:
-        user = tweet['user']
-        location = user['location']
-        loc = location.split(',')[0]
+# filter tweets: only the one match region with the keyword
+def CheckTwitter(tweet, keyword, region):
+    loc = getLocation(tweet)
 
     if (loc in region):
-        print("found xD")
-        useful = True
+        if (isUseful(keyword, tweet['text'])):
+            print("keyword found = %s" % keyword)
+            print("tweet text = %s" % tweet['text'])
+            return True
 
-    return useful
+    return False
+
 
 # As going into friend's list, need to check all keywords
-
-
 def CheckFriendsTwitter(tweet, query, region):
-    useful = False
-    text = tweet['text']
+    loc = getLocation(tweet)
+
+    if (loc in region):
+        for keyword in query:
+            if (isUseful(keyword, tweet['text'])):
+                print("keyword found = %s" % keyword)
+                print("tweet text = %s" % tweet['text'])
+                return True
+
+    return False
+
+
+def getLocation(tweet):
     place = tweet['place']
     if place != None:
         loc = place['country_code']
@@ -100,13 +101,14 @@ def CheckFriendsTwitter(tweet, query, region):
         location = user['location']
         loc = location.split(',')[0]
 
-    if (loc in region):
-        for w in query:
-            if w.lower() in text.lower():
-                print("found & Current Keyword = %s" % w.lower())
-                useful = True
+    return loc
 
-    return useful
+
+def isUseful(keyword, text):
+    if (re.search(r'\b{}'.format(keyword), text, flags=re.IGNORECASE)):
+        return True
+
+    return False
 
 
 def main():
@@ -118,7 +120,7 @@ def main():
     keywords = ['airbnb', 'stayz', 'zomato', 'deliveroo', 'hungrypanda',
                 'lyft', 'olacab', '#grab', 'grabcar', 'didirider', 'menulog',
                 'taxify', 'etsy', 'gumtree', 'fiverr', 'cookitoo', 'uber',
-                'expedia', 'airtasker', 'freelancer', 'parkhound', 'campspace',
+                'airtasker', '#freelancer', 'parkhound', 'campspace',
                 'upwork', 'designcrowd', 'ratesetter', 'urbansitter', 'airly',
                 'gocatch', 'shebah', 'bellhops', 'channel40', 'freightmatch',
                 'wrappli', 'zoom2u', 'carnextdoor', 'camplify', 'kindershare',
@@ -138,9 +140,8 @@ def main():
 
 main()
 
+
 # Stream API goes here
-
-
 class MyStreamListener(tweepy.StreamListener):
 
     def __init__(self, time_limit=60):
