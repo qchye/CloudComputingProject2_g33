@@ -1,0 +1,43 @@
+{% for node in range(couch_size) %}
+   
+     docker service rm couchdb{{node}}
+   
+{% endfor %}
+
+
+{% for node_num in range(couch_size) %}
+    docker service create\
+        --name couchdb{{node_num}}\
+        --constraint node.labels.ip=={{servers[node_num]}}\
+        --publish mode=host,target=5984,published=5984\
+        --publish mode=host,target=9100,published=9100\
+        --publish mode=host,target=4369,published=4369\
+        --mount type=bind,src={{path}},dst=/opt/data\
+        --env COUCHDB_USER={{user}}\
+        --env COUCHDB_PASSWORD={{pass}}\
+        --env NODENAME=couchdb@{{servers[node_num]}}\
+        --env COUCHDB_SECRET={{cookie}}\
+        --env ERL_FLAGS="-setcookie \"{{cookie}}\" -name \"couchdb@{{servers[node_num]}}\""\
+        ibmcom/couchdb3:3.0.0
+
+{% endfor %}
+
+
+{% for node in other_nodes %}
+    curl -XPOST "http://{{user}}:{{pass}}@{{masternode}}:5984/_cluster_setup" \
+        --header "Content-Type: application/json"\
+        --data "{\"action\": \"enable_cluster\", \"bind_address\":\"0.0.0.0\",\
+                \"username\": \"{{user}}\", \"password\":\"{{pass}}\", \"port\": \"5984\",\
+                \"remote_node\": \"{{node}}\", \"node_count\": \"{{cluster_size}}\",\
+                \"remote_current_user\":\"{{user}}\", \"remote_current_password\":\"{{pass}}\"}"
+
+    curl -XPOST "http://{{user}}:{{pass}}@{{masternode}}:5984/_cluster_setup"\
+        --header "Content-Type: application/json"\
+        --data "{\"action\": \"add_node\", \"host\":\"{{node}}\",\
+                \"port\": \"5984\", \"username\": \"{{user}}\", \"password\":\"{{pass}}\"}"
+    
+{% endfor %}
+
+curl -X GET "http://{{user}}:{{pass}}@{{masternode}}:5984/"
+
+curl -XPOST "http://{{user}}:{{pass}}@{{masternode}}:5984/_cluster_setup" --header "Content-Type: application/json" --data "{\"action\": \"finish_cluster\"}"
