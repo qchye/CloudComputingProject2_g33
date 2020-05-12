@@ -139,23 +139,3 @@ def main():
 
 
 main()
-
-
-# Stream API goes here
-class MyStreamListener(tweepy.StreamListener):
-
-    def __init__(self, time_limit=60):
-        self.limit = time_limit
-        self.tweet_data = []
-
-    def on_status(self, status):
-        print(status.text)
-
-    def on_data(self, data):
-        print(data)
-
-
-def StartStream(keywordList, language):
-    myStreamListener = MyStreamListener()
-    myStream = tweepy.Stream(auth=auth1, listener=myStreamListener)
-    myStream.filter(track=keywordList, languages=language)
