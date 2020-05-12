@@ -2,6 +2,22 @@ import tweepy
 import json
 import re
 import couchdb_requests
+from textblob import TextBlob
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import nltk
+import ssl
+
+
+# disable ssl checking
+# Reference from https://stackoverflow.com/questions/38916452/nltk-download-ssl-certificate-verify-failed
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
+
+nltk.download('punkt')
 
 
 # Tweepy
@@ -67,12 +83,15 @@ def ProcessRelatedTweets(api, friendsIdList, query, region, totalExplored, total
 
 # filter tweets: only the one match region with the keyword
 def CheckTwitter(tweet, keyword, region):
+    print(tweet)
     loc = getLocation(tweet)
 
     if (loc in region):
-        if (isUseful(keyword, tweet['text'])):
+        text = tweet['text']
+        if (isUseful(keyword, text)):
             print("keyword found = %s" % keyword)
-            print("tweet text = %s" % tweet['text'])
+            print("tweet text = %s" % text)
+            print(extractTweetImpAttr(tweet, loc, keyword, text))
             return True
 
     return False
@@ -83,15 +102,47 @@ def CheckFriendsTwitter(tweet, query, region):
     loc = getLocation(tweet)
 
     if (loc in region):
+        text = tweet['text']
         for keyword in query:
-            if (isUseful(keyword, tweet['text'])):
+            if (isUseful(keyword, text)):
                 print("keyword found = %s" % keyword)
-                print("tweet text = %s" % tweet['text'])
+                print("tweet text = %s" % text)
+                print(extractTweetImpAttr(tweet, loc, keyword, text))
+
                 return True
 
     return False
 
 
+# Extract tweets with just the id, created date, text
+# location, matched keyword and sentimental value
+def extractTweetImpAttr(tweet, loc, keyword, text):
+    reqTweetAttr = {}
+    reqTweetAttr['id'] = tweet['id']
+    reqTweetAttr['created_at'] = tweet['created_at']
+    reqTweetAttr['text'] = text
+    reqTweetAttr['location'] = loc
+    reqTweetAttr['keyword'] = keyword
+
+    # get the sentiment value of the tweet
+    tweetTextBlob = TextBlob(text)
+    analyzer = SentimentIntensityAnalyzer()
+    totalSentimentValue = 0
+    numSentences = 0
+    for sentence in tweetTextBlob.sentences:
+        vs = analyzer.polarity_scores(sentence)
+        totalSentimentValue += vs['compound']
+        numSentences += 1
+
+    print("totalSentimentValue = %lf" % totalSentimentValue)
+    print("numSentences = %d" % numSentences)
+    reqTweetAttr['sentimental'] = totalSentimentValue/numSentences
+
+    return reqTweetAttr
+
+
+# get the location of the tweet based on the place of the tweet
+# or the user location
 def getLocation(tweet):
     place = tweet['place']
     if place != None:
@@ -104,6 +155,7 @@ def getLocation(tweet):
     return loc
 
 
+# check if the tweet is useful for our analysis
 def isUseful(keyword, text):
     if (re.search(r'\b{}'.format(keyword), text, flags=re.IGNORECASE)):
         return True
