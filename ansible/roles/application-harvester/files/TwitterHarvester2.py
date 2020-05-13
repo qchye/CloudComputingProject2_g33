@@ -1,14 +1,14 @@
 import tweepy
-from TwitterHarvesterFunc import mainFunction, all_keywords, all_regions, fst_half_keywords, MAX_COUNT
+from TwitterHarvesterFunc import mainFunction, all_keywords, all_regions, snd_half_keywords, MAX_COUNT
 
 
 def main():
 
     auth = tweepy.AppAuthHandler(
-        "X7zGj3Ow4bPu05Em8WGGsko3G", "VkYgRxRkid5Ru4cpU7QineZIK2icnpRIHpZpVGaH8RlSYCJIQG")
+        "PmRzO6aE5UCwbU9e9hUWS0PKv", "uV88V1zKlqyEIayVfWnLfCXyTKJngT2u6RUaGO4SpIEfeM4QLm")
     api = tweepy.API(auth, wait_on_rate_limit=True,
                      wait_on_rate_limit_notify=True)
-    half_keywords = fst_half_keywords
+    half_keywords = snd_half_keywords
     keywords = all_keywords
     region = all_regions
     count = MAX_COUNT
