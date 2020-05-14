@@ -20,15 +20,6 @@
 #     - role: swarm-volumes
 #     - role: swarm-setup
 
-# - hosts: SWARM
-#   vars_files:
-#     - host_vars/applications.yaml
-#   gather_facts: true
-#   become: yes
-
-#   roles:
-#     - role: application-haproxy
-
 - hosts: SWARM
   vars_files:
     - host_vars/applications.yaml
@@ -36,11 +27,11 @@
   become: yes
 
   roles:
-    - role: application-haproxy
-      tags:
-        - haproxy
-    - role: application-harvester
-      tags: 
-        - harvester
+#     - role: application-haproxy
+#       tags:
+#         - haproxy
+#     - role: application-harvester
+#       tags: 
+#         - harvester
     - role: application-couchdb
 

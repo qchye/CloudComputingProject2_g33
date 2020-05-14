@@ -40,15 +40,15 @@ security_groups:
       - protocol: tcp
         port_range_min: 5984
         port_range_max: 5984
-        remote_ip_prefix: 0.0.0.0/0
+        remote_group: CouchDB
       - protocol: tcp
         port_range_min: 4369
         port_range_max: 4369
-        remote_ip_prefix: 0.0.0.0/0
+        remote_group: CouchDB
       - protocol: tcp
         port_range_min: 9100
         port_range_max: 9100
-        remote_ip_prefix: 0.0.0.0/0
+        remote_group: CouchDB
   - name: docker_swarm
     description: "Security group for Docker Swarm"
     sg_rules:
@@ -73,16 +73,19 @@ security_groups:
 instances:
   - name: swarm-01
     volumes: ['instance1-docker-vol', 'instance1-couch-db-vol']
+    instance_flavor: uom.mse.2c9g
   - name: swarm-02
     volumes: ['instance2-docker-vol', 'instance2-couch-db-vol']
+    instance_flavor: uom.mse.2c9g
   - name: swarm-03
     volumes: ['instance3-docker-vol', 'instance3-couch-db-vol' ]
+    instance_flavor: uom.mse.2c9g
   - name: swarm-04
     volumes: ['instance4-docker-vol']
+    instance_flavor: uom.mse.1c4g
 
 instance_image: 45225edb-66d8-4fd0-bf41-132a31a18166
 instance_key_name: assignment_2
-instance_flavor: uom.mse.1c4g
 instance_network: qh2-uom-internal
 
 swarm_managers_count: 3

@@ -2,12 +2,19 @@
   docker_image:
     name: ibmcom/couchdb3:3.0.0
 
+- name: Add the service account 'couch' with a specific uid and a primary group of 'admin'
+  user:
+    name: couch
+    comment: Couch SA
+    uid: "{{ couch_service_account_uid }}"
+
 - name: Create directory
   become: yes
   file:
     path: "{{ couchdb_path }}"
     recurse: yes
     state: directory
+    owner: "{{ couch_service_account_uid }}"
 
 
 - name: Setup the shell commands

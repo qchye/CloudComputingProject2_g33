@@ -12,7 +12,8 @@
         --publish mode=host,target=5984,published=5984\
         --publish mode=host,target=9100,published=9100\
         --publish mode=host,target=4369,published=4369\
-        --mount type=bind,src={{path}},dst=/opt/data\
+        --mount type=bind,src={{couchdb_path}},dst=/opt/couchdb/data\
+        --user $(id -u):$(id -g)\
         --env COUCHDB_USER={{user}}\
         --env COUCHDB_PASSWORD={{pass}}\
         --env NODENAME=couchdb@{{servers[node_num]}}\
@@ -41,3 +42,5 @@
 curl -X GET "http://{{user}}:{{pass}}@{{masternode}}:5984/"
 
 curl -XPOST "http://{{user}}:{{pass}}@{{masternode}}:5984/_cluster_setup" --header "Content-Type: application/json" --data "{\"action\": \"finish_cluster\"}"
+
+curl -X PUT "http://{{user}}:{{pass}}@{{masternode}}:5984/{{ couch_db_twitter_database_name }}?q=2&n=2"
