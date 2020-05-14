@@ -1,7 +1,7 @@
 import tweepy
 import json
 import re
-# import couchdb_requests
+import couchdb_requests
 from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import nltk
@@ -33,10 +33,12 @@ def mainFunction(api, query, all_keywords, count, language, region):
 
             tweet_json = tweet._json
             totalExplored += 1
+            single_result = CheckTwitter(tweet_json, keyword, region)
             # We only interested the tweets in Australia and keyword in text
-            if CheckTwitter(tweet_json, keyword, region):
+            if single_result != False:
                 totalUsefulTweets += 1
-                # Tweets storing process here, waiting for CouchDb
+                # Tweets storing process here
+                couchdb_requests.couch_post(single_result)
 
                 print("==================================FINDING FRIENDS OF USER STARTS=============================================================================")
                 # Finding Friends of friends section
@@ -62,20 +64,23 @@ def searchFriends(api, target):
 
 # Finding friends' timeline tweets, also check if the tweets is useful, and record accordingly
 def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets):
-
+    
     for Id in friendsIdList:
-
+        
         try:
             # Searching tweets from timeline of user
             for tweet in tweepy.Cursor(api.user_timeline, id=Id).items():
                 totalExplored += 1
                 tweet_json = tweet._json
-                # print(tweet_json)
-                if CheckFriendsTwitter(tweet_json, all_keywords, region):
+                single_result = CheckFriendsTwitter(tweet_json, all_keywords, region)
+                if single_result != False:
+                    couchdb_requests.couch_post(single_result)
                     totalUsefulTweets += 1
                 print("Total Explored: %d" % totalExplored)
                 print("Total Useful Tweets: %d" % totalUsefulTweets)
+                
         except Exception:  # Might because the user is private, so need to catch the exception.
+            print(Exception)
             pass
 
     return (totalExplored, totalUsefulTweets)
@@ -83,33 +88,31 @@ def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored
 
 # filter tweets: only the one match region with the keyword
 def CheckTwitter(tweet, keyword, region):
-    print(tweet)
+
     loc = getLocation(tweet)
     text = tweet['text']
 
     if (loc in region) and (not isRetweet(text)):
         if (isUseful(keyword, text)):
-            print("keyword found = %s" % keyword)
-            print("tweet text = %s" % text)
-            print(extractTweetImpAttr(tweet, loc, keyword, text))
-            return True
+            extracted_result = extractTweetImpAttr(tweet, loc, keyword, text)
+
+            return extracted_result
 
     return False
 
 
 # As going into friend's list, need to check all keywords
 def CheckFriendsTwitter(tweet, all_keywords, region):
+    
     loc = getLocation(tweet)
     text = tweet['text']
-
+    
     if (loc in region) and (not isRetweet(text)):
         for keyword in all_keywords:
             if (isUseful(keyword, text)):
-                print("keyword found = %s" % keyword)
-                print("tweet text = %s" % text)
-                print(extractTweetImpAttr(tweet, loc, keyword, text))
-
-                return True
+                extracted_result = extractTweetImpAttr(tweet, loc, keyword, text)
+                
+                return extracted_result
 
     return False
 
@@ -118,7 +121,7 @@ def CheckFriendsTwitter(tweet, all_keywords, region):
 # location, matched keyword and sentimental value
 def extractTweetImpAttr(tweet, loc, keyword, text):
     reqTweetAttr = {}
-    reqTweetAttr['id'] = tweet['id']
+    reqTweetAttr['_id'] = json.dumps(tweet['id'])
     reqTweetAttr['created_at'] = tweet['created_at']
     reqTweetAttr['text'] = text
     reqTweetAttr['location'] = loc
@@ -134,8 +137,6 @@ def extractTweetImpAttr(tweet, loc, keyword, text):
         totalSentimentValue += vs['compound']
         numSentences += 1
 
-    print("totalSentimentValue = %lf" % totalSentimentValue)
-    print("numSentences = %d" % numSentences)
     reqTweetAttr['sentimental'] = totalSentimentValue/numSentences
 
     return reqTweetAttr
@@ -144,13 +145,26 @@ def extractTweetImpAttr(tweet, loc, keyword, text):
 # get the location of the tweet based on the place of the tweet
 # or the user location
 def getLocation(tweet):
-    place = tweet['place']
+    loc = None
+    place = None
+
+    try:
+        place = tweet['place']
+    except Exception:
+        pass
+
     if place != None:
-        loc = place['country_code']
+        if place['country_code'] == 'AU':
+            if place['full_name'] != None:
+                loc = place['full_name'].split(',')[0]
     else:
-        user = tweet['user']
-        location = user['location']
-        loc = location.split(',')[0]
+        try:
+            user = tweet['user']
+            location = user['location']
+            if location != None:
+                loc = location.split(',')[0]
+        except Exception:
+            pass
 
     return loc
 
@@ -171,15 +185,6 @@ def isRetweet(text):
 
     return False
 
-
-# def couchRequest():
-#     variables = {}
-#     with open('variables.json') as json_file:
-#         variables = json.load(json_file)
-
-#     couchdb_requests.couchdb_test(variables)
-
-
 # All required information to obtain useful tweets
 all_keywords = ['airbnb', 'stayz', 'zomato', 'deliveroo', 'hungrypanda',
                 'lyft', 'olacab', '#grab', 'grabcar', 'didirider', 'menulog',
@@ -197,7 +202,7 @@ fst_half_keywords = ['airbnb', 'zomato', 'airtasker', 'menulog', 'lyft',
 snd_half_keywords = ['uber', 'deliveroo',  'fiverr',  'doordash', 'gumtree',
                      'hungrypanda', 'olacab', 'didirider',  'cookitoo',  '#grab', 'parkhound', 'airly', 'urbansitter', 'gocatch',  'kindershare', 'quipmo', 'thevolte', 'bettercaring', '#blys', 'classbento', 'helpling']
 
-all_regions = ['AU', 'Melbourne', 'Sydney', 'Queensland', 'Australia',
-               'Western Australia', 'South Australia', 'Victoria']
+all_regions = ['Melbourne', 'Sydney', 'Queensland', 'Perth', 'New South Wales', 'Brisbane', 'Tasmania',
+              'Canberra', 'Darwin', 'Adelaide', 'Hobart', 'Western Australia', 'South Australia', 'Victoria']
 
 MAX_COUNT = 10000
