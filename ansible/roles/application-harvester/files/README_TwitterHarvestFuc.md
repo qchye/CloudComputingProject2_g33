@@ -1,4 +1,4 @@
-# TwitterHarvester and Upload
+# Twitter Harvester
 
 ## Imported Packages
 In order to do get all the required information to the CouchDB, the 7 packages: 'tweepy', 'json', 're','TextBlob','nltk', 'ssl' and 'SentimentIntensityAnalyzer' are used. 
@@ -53,24 +53,22 @@ This function id for check whether the keyword is in the text or not.
 ### Output
 Boolean: True or False.
 
-## main()
-This function includes the authortication,api,keyword and regions information for the getting the useful tweets.
+## main() 
+This function includes the authortication,api,keyword and regions information for the getting the useful tweets.(This function is in the TwitterHarvest2.py)
 
 ## Reference
 1. textblob - https://textblob.readthedocs.io/en/dev/install.html
 
-2. vaderSentiment - https://pypi.org/project/vaderSentiment/
+2. vaderSentiment - https://pypi.org/project/vaderSentiment/ 
+
 Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
 
 3. NLTK package - https://www.nltk.org/install.html
 
-4. 'Punkt' error handle https://stackoverflow.com/questions/38916452/nltk-download-ssl-certificate-verify-failed
+4. 'Punkt' error handle: https://stackoverflow.com/questions/38916452/nltk-download-ssl-certificate-verify-failed
 
 
-
-
-
-
+### Common out
 'couchdb_requests',
-'couchdb_requests': conncting to the couchDB for upload the database
-upload the useful dictionary to CouchDB
+'couchdb_requests': conncting to the couchDB for upload the database.
+Upload the useful dictionary to CouchDB
