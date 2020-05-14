@@ -2,8 +2,9 @@
 
 ## Imported Packages
 In order to do get all the required information to the CouchDB, the 7 packages: 'tweepy', 'json', 're','TextBlob','nltk', 'ssl' and 'SentimentIntensityAnalyzer' are used. 
-'tweepy': for curl the tweets from Tweeter
-'json': read the 'json' file
+
+'tweepy': for curl the tweets from Tweeter.\
+'json': read the 'json' file.\
 're': using the regular expression for find the useful tweets.
 'TextBlob': Breakup the text to sentences.
 'nltk': Installing  'Punkt' from it.
