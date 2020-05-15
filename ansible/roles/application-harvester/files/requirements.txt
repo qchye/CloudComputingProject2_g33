@@ -3,3 +3,8 @@ flask
 Flask
 requests
 requests_toolbelt
+textblob
+re
+vaderSentiment
+nltk
+ssl
