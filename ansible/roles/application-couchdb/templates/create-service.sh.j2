@@ -44,3 +44,9 @@ curl -X GET "http://{{ user }}:{{ pass }}@{{ masternode }}:5984/"
 curl -XPOST "http://{{ user }}:{{ pass }}@{{ masternode }}:5984/_cluster_setup" --header "Content-Type: application/json" --data "{\"action\": \"finish_cluster\"}"
 
 curl -X PUT "http://{{ user }}:{{ pass }}@{{ masternode }}:5984/{{ couch_db_twitter_database_name }}?q=2&n=2"
+
+curl -X PUT http://{{ user }}:{{ pass }}@{{ masternode }}:5984/_node/{{ masternode }}/_config/admins/{{ harvester_sa_username }} -d '{{ harvester_sa_password }}'
+
+{% for node in other_nodes %}
+    curl -X PUT http://{{ user }}:{{ pass }}@{{ masternode }}:5984/_node/{{ node }}/_config/admins/{{ harvester_sa_username }} -d '{{ harvester_sa_password }}'
+{% endfor %}

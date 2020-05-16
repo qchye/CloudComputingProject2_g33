@@ -18,8 +18,8 @@ couchdb_port: 5984
 
 harvester_path: "/opt/harvester"
 swarm_manager_ip: "{{ groups['docker_swarm_manager'][0] }}"
-harvester_sa_username: "admin"
-harvester_sa_password: "admin"
+harvester_sa_username: "harvester"
+harvester_sa_password: "secret"
 harvester_build_proxy: "http://wwwproxy.unimelb.edu.au:8000/"
 
 ##
