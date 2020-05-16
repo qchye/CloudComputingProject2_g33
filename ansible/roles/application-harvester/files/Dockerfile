@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi8/python-38
 
 LABEL name="Twitter Harvester"
-LABEL description="Twitter harvester Python Flask application"
+LABEL description="Twitter harvester Python application"
 LABEL maintainer="Shorye Chopra"
 
 ENV HARVESTER_HOME /opt/harvester

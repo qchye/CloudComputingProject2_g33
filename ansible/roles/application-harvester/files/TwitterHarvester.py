@@ -4,21 +4,20 @@ from TwitterHarvesterFunc import mainFunction, all_keywords, all_regions, fst_ha
 
 
 def main():
-
-    auth = tweepy.AppAuthHandler(
-        "X7zGj3Ow4bPu05Em8WGGsko3G", "VkYgRxRkid5Ru4cpU7QineZIK2icnpRIHpZpVGaH8RlSYCJIQG")
-    api = tweepy.API(auth, wait_on_rate_limit=True,
-                     wait_on_rate_limit_notify=True)
-    half_keywords = fst_half_keywords
-    keywords = all_keywords
-    region = all_regions
-    count = MAX_COUNT
-    language = 'en'
+    
     variables = {}
     with open('variables.json') as json_file:
         variables = json.load(json_file)
+    auth = tweepy.AppAuthHandler(
+        variables["harvester_historic"]["tweepy_auth"]["auth_id"], variables["harvester_historic"]["tweepy_auth"]["auth_key"])
+    api = tweepy.API(auth, wait_on_rate_limit=True,
+                     wait_on_rate_limit_notify=True)
+    half_keywords = variables["harvester_historic"]["keywords_processed"]
+    keywords = variables["harvester_generic"]["keywords"]
+    region = variables["harvester_generic"]["regions"]
+    count = variables["harvester_generic"]["max_count"]
+    language = 'en'
     mainFunction(api, half_keywords, keywords, count, language, region, variables)
-
     return
 
 

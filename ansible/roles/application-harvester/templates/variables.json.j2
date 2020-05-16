@@ -1,5 +1,27 @@
 {
     "COUCHDB_BASE_URL" : "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/",
     "USERNAME" : "{{ harvester_sa_username }}",
-    "PASSWORD" : "{{ harvester_sa_password }}"
+    "PASSWORD" : "{{ harvester_sa_password }}",
+    "harvester_generic": {
+        "keywords" : {{ harvester_keywords | to_json }},
+        "regions" : {{ harvester_regions | to_json }},
+        "max_count" : 10000
+    },
+    {% if (live | default(false)) %}
+    "harvester_live": {
+        "tweepy_auth": {
+            "auth_id": "{{ harvester_historic_tweepy_auth[service_index][0] }}",
+            "auth_key": "{{ harvester_historic_tweepy_auth[service_index][1] }}"
+        }
+    }
+    {% endif %}
+    {% if (historic | default(false)) %}
+    "harvester_historic": {
+        "tweepy_auth": {
+            "auth_id": "{{ harvester_historic_tweepy_auth[service_index][0] }}",
+            "auth_key": "{{ harvester_historic_tweepy_auth[service_index][1] }}"
+        },
+        "keywords_processed" : {{ (harvester_keywords|slice(harvester_historic_services)|list)[service_index] | to_nice_json }}
+    }
+    {% endif %}
 }

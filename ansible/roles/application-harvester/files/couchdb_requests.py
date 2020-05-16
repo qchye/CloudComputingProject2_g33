@@ -1,5 +1,4 @@
 import requests
-import logging
 import http
 import json
 from requests.adapters import HTTPAdapter
@@ -7,7 +6,6 @@ from requests.packages.urllib3.util.retry import Retry
 from requests.auth import HTTPBasicAuth
 from requests_toolbelt.utils import dump
 
-logger = logging.getLogger('CouchDB')
 def requests_retry_session(
     retries=3,
     backoff_factor=1,
@@ -56,9 +54,11 @@ def couch_post(couch_vars ,tweet):
 
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 400:
-           logger.exception("Bad Request was Sent")
+           print("Bad Request was Sent")
+        elif e.response.status_code == 409:
+            print("Document exists in DB")
         else:
-           logger.exception(e.__class__.__name__)
+           print(e.__class__.__name__)
     except Exception as e: 
         print('Failure Caused by ', e.__class__.__name__)
         return False

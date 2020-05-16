@@ -28,9 +28,9 @@ class MyStreamListener(tweepy.StreamListener):
             print(extractedTweets)
             couchdb_requests.couch_post(self.variables, extractedTweets)
 
-def StartStream(keywords, language):
+def StartStream(keywords, language, variables):
    
-    auth = tweepy.OAuthHandler("7K0xu6SgVlnA7nJwNVVPZHgSD", "MHIEp3ibXDKkVSilriKdRFFduvJn55ow6zsYdcU710wyui1Nil")
+    auth = tweepy.OAuthHandler(variables["harvester_live"]["tweepy_auth"]["auth_id"], variables["harvester_live"]["tweepy_auth"]["auth_key"])
     auth.set_access_token("1252833883516624903-Ym6NDMEmTgaFhUK4dOcEHzsN4ZQfr6", "MIloYNYqgp6hwEREQBEEzri6DshW2UljsRhVdKxa5WiQM")
     myStreamListener = MyStreamListener()
     myStream = tweepy.Stream(auth=auth, listener=myStreamListener)
@@ -51,10 +51,13 @@ def CheckTwitter(tweet, all_keywords, region):
     return False
 
 def main():
-
-    keywords = all_keywords
+    
+    variables = {}
+    with open('variables.json') as json_file:
+        variables = json.load(json_file)
+    keywords = variables["harvester_generic"]["keywords"]
     language = ['en']
-    StartStream(keywords, language)
+    StartStream(keywords, language, variables)
 
     return
 
