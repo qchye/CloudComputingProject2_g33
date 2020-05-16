@@ -23,7 +23,7 @@ nltk.download('punkt')
 # Tweepy
 # SEARCH API
 # Search result based on query given, giving tweets, check tweets condition
-def mainFunction(api, query, all_keywords, count, language, region):
+def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
 
     totalExplored = 0
     totalUsefulTweets = 0
@@ -38,7 +38,7 @@ def mainFunction(api, query, all_keywords, count, language, region):
             if single_result != False:
                 totalUsefulTweets += 1
                 # Tweets storing process here
-                couchdb_requests.couch_post(single_result)
+                couchdb_requests.couch_post(couch_vars, single_result)
 
                 print("==================================FINDING FRIENDS OF USER STARTS=============================================================================")
                 # Finding Friends of friends section
@@ -46,7 +46,7 @@ def mainFunction(api, query, all_keywords, count, language, region):
                 user_id = user['id']
                 friendsIdList = searchFriends(api, user_id)
                 totalExplored, totalUsefulTweets = ProcessRelatedTweets(
-                    api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets)
+                    api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets, couch_vars)
 
             print("Total Explored: %d" % totalExplored)
             print("Total Useful Tweets: %d" % totalUsefulTweets)
@@ -63,7 +63,7 @@ def searchFriends(api, target):
 
 
 # Finding friends' timeline tweets, also check if the tweets is useful, and record accordingly
-def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets):
+def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets, couch_vars):
     
     for Id in friendsIdList:
         
@@ -74,7 +74,7 @@ def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored
                 tweet_json = tweet._json
                 single_result = CheckFriendsTwitter(tweet_json, all_keywords, region)
                 if single_result != False:
-                    couchdb_requests.couch_post(single_result)
+                    couchdb_requests.couch_post(couch_vars, single_result)
                     totalUsefulTweets += 1
                 #print("Total Explored: %d" % totalExplored)
                 #print("Total Useful Tweets: %d" % totalUsefulTweets)
@@ -184,6 +184,7 @@ def isRetweet(text):
         return True
 
     return False
+
 
 # All required information to obtain useful tweets
 all_keywords = ['airbnb', 'stayz', 'zomato', 'deliveroo', 'hungrypanda',

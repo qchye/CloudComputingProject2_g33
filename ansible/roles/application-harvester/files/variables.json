@@ -1,0 +1,5 @@
+{
+  "USERNAME": "admin",
+  "PASSWORD": "admin",
+  "COUCHDB_BASE_URL": "http://172.26.133.111:8080/"
+}

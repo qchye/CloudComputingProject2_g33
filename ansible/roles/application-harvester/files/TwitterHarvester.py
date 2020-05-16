@@ -1,4 +1,5 @@
 import tweepy
+import json
 from TwitterHarvesterFunc import mainFunction, all_keywords, all_regions, fst_half_keywords, MAX_COUNT
 
 
@@ -13,7 +14,10 @@ def main():
     region = all_regions
     count = MAX_COUNT
     language = 'en'
-    mainFunction(api, half_keywords, keywords, count, language, region)
+    variables = {}
+    with open('variables.json') as json_file:
+        variables = json.load(json_file)
+    mainFunction(api, half_keywords, keywords, count, language, region, variables)
 
     return
 

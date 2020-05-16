@@ -1,11 +1,12 @@
-
 from TwitterHarvesterFunc import all_keywords,all_regions,CheckFriendsTwitter
 import json
 import couchdb_requests
 
 def manualHarvesttxt():
     inputfile='./tweetsGigRes.txt'
-    
+    variables = {}
+    with open('variables.json') as json_file:
+        variables = json.load(json_file)
     for line in open(inputfile,encoding='utf-8'):
         try:
             tweets=json.loads(line)
@@ -14,7 +15,7 @@ def manualHarvesttxt():
         #print(CheckFriendsTwitter(tweets, all_keywords, all_regions))
         single_result = CheckFriendsTwitter(tweets, all_keywords, all_regions)
         if single_result != False:
-            couchdb_requests.couch_post(single_result)
+            couchdb_requests.couch_post(variables, single_result)
     return
 
 
@@ -22,7 +23,9 @@ def manualHarvestMel():
     inputfile='./twitter-melb.json'
     tweet=''
     single_result=False
-    
+    variables = {}
+    with open('variables.json') as json_file:
+        variables = json.load(json_file)
     for line in open(inputfile,encoding='utf-8'):       
         try:
             tweets=json.loads(line[:-2])
@@ -33,7 +36,7 @@ def manualHarvestMel():
             pass
         
         if single_result != False:
-            couchdb_requests.couch_post(single_result)
+            couchdb_requests.couch_post(variables, single_result)
     return
 
 manualHarvesttxt()
