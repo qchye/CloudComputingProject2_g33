@@ -1,33 +1,39 @@
+- hosts: localhost
+  vars_files:
+    - host_vars/nectar.yaml
+  gather_facts: true
+
+  roles:
+    # - role: openstack-common
+    - role: openstack-volume
+    - role: openstack-security-group
+    - role: openstack-instance
+
+- hosts: SWARM
+  vars_files:
+    - host_vars/docker-swarm.yaml
+  gather_facts: true
+  become: yes
+
+  roles:
+    - role: swarm-common
+    - role: swarm-volumes
+    - role: swarm-setup
+
+# Below is helper role for populating the inventory file based on 
+# the instances created above
+# Uncomment when deploying or updating a new/existing application
+# i.e - When planning on running an application-* role
+# Ensure also to comment out above infrastructure related roles
+# to quicken the playbook
+
 # - hosts: localhost
 #   vars_files:
 #     - host_vars/nectar.yaml
-#   gather_facts: true
+#   gather_facts: false
 
 #   roles:
-#     # - role: openstack-common
-#     - role: openstack-volume
-#     - role: openstack-security-group
-#     - role: openstack-instance
-
-# - hosts: SWARM
-#   vars_files:
-#     - host_vars/docker-swarm.yaml
-#   gather_facts: true
-#   become: yes
-
-#   roles:
-#     - role: swarm-common
-#     - role: swarm-volumes
-#     - role: swarm-setup
-
-# - hosts: SWARM
-#   vars_files:
-#     - host_vars/applications.yaml
-#   gather_facts: true
-#   become: yes
-
-#   roles:
-#     - role: application-haproxy
+#     - role: helper-inventory-populator
 
 - hosts: SWARM
   vars_files:
@@ -37,10 +43,5 @@
 
   roles:
     - role: application-haproxy
-      tags:
-        - haproxy
     - role: application-harvester
-      tags: 
-        - harvester
     - role: application-couchdb
-

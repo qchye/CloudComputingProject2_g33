@@ -1,6 +1,14 @@
 - name: Pull CouchDB Image
   docker_image:
     name: ibmcom/couchdb3:3.0.0
+  when: " 'backend_nodes' in group_names"
+
+- name: Add the service account 'couch' with a specific uid and a primary group of 'admin'
+  user:
+    name: couch
+    comment: Couch SA
+    uid: "{{ couch_service_account_uid }}"
+  when: " 'backend_nodes' in group_names"
 
 - name: Create directory
   become: yes
@@ -8,6 +16,8 @@
     path: "{{ couchdb_path }}"
     recurse: yes
     state: directory
+    owner: "{{ couch_service_account_uid }}"
+  when: " 'backend_nodes' in group_names"
 
 
 - name: Setup the shell commands
@@ -17,10 +27,9 @@
     mode: '0755'
   vars: 
     servers: "{{ groups['backend_nodes'] }}"
-    couch_size: "{{cluster_size}}"
+    couch_size: "{{ cluster_size }}"
     masternode: "{{ groups['backend_nodes'][0] }}"
     other_nodes: "{{ groups['backend_nodes'][1:couch_size] }}"
-    path: "{{couchdb_path}}"
   when: "inventory_hostname == groups['docker_swarm_manager'][0]"
 
 - name: Create the cluster
