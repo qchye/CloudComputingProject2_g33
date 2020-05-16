@@ -12,6 +12,11 @@ class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         print(status.text)
 
+    def on_error(self, status_code):
+        if status_code == 420:
+            #returning False in on_error disconnects the stream
+            return True
+
     def on_data(self, data):
         extractedTweets = CheckTwitter(json.loads(data), all_keywords, all_regions)
         if extractedTweets != False:

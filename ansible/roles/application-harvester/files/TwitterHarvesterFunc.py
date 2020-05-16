@@ -69,15 +69,15 @@ def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored
         
         try:
             # Searching tweets from timeline of user
-            for tweet in tweepy.Cursor(api.user_timeline, id=Id).items():
+            for tweet in tweepy.Cursor(api.user_timeline, id=Id, lang = 'en').items(1000):
                 totalExplored += 1
                 tweet_json = tweet._json
                 single_result = CheckFriendsTwitter(tweet_json, all_keywords, region)
                 if single_result != False:
                     couchdb_requests.couch_post(single_result)
                     totalUsefulTweets += 1
-                print("Total Explored: %d" % totalExplored)
-                print("Total Useful Tweets: %d" % totalUsefulTweets)
+                #print("Total Explored: %d" % totalExplored)
+                #print("Total Useful Tweets: %d" % totalUsefulTweets)
                 
         except Exception:  # Might because the user is private, so need to catch the exception.
             print(Exception)
