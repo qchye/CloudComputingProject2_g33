@@ -1,12 +1,14 @@
 - name: Pull CouchDB Image
   docker_image:
     name: ibmcom/couchdb3:3.0.0
+  when: " 'backend_nodes' in group_names"
 
 - name: Add the service account 'couch' with a specific uid and a primary group of 'admin'
   user:
     name: couch
     comment: Couch SA
     uid: "{{ couch_service_account_uid }}"
+  when: " 'backend_nodes' in group_names"
 
 - name: Create directory
   become: yes
@@ -15,6 +17,7 @@
     recurse: yes
     state: directory
     owner: "{{ couch_service_account_uid }}"
+  when: " 'backend_nodes' in group_names"
 
 
 - name: Setup the shell commands

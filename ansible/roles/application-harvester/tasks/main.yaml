@@ -4,6 +4,7 @@
     path: "{{ harvester_path }}"
     recurse: yes
     state: directory
+  when: " 'backend_nodes' in group_names"
 
 - name: Copy files needed to build docker image on all backend nodes
   copy:

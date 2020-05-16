@@ -2,9 +2,7 @@
 
 # Byte-compiled / optimized / DLL files
 __MACOSX/*
-__pycache__/*
-*.py[cod]
-*$py.class
+__pycache__
 .vs/*
 
 # Distribution / packaging

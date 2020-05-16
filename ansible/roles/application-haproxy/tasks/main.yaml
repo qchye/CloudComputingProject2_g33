@@ -4,6 +4,7 @@
     path: "{{ haproxy_path }}"
     recurse: yes
     state: directory
+  when: " 'backend_nodes' in group_names"
 
 - name: Copy haproxy config to backend hosts
   template:
