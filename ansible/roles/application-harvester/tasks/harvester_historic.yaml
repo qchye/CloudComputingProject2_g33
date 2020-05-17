@@ -41,6 +41,12 @@
     source: build
   when: " 'backend_nodes' in group_names"
 
+- name: Remove existing service
+  command:
+    cmd: docker service rm harvester-historic{{ service_index }}
+  when: "inventory_hostname == groups['docker_swarm_manager'][0]"
+  ignore_errors: yes
+  
 - name: Create Docker services for Historic Harvester
   become: yes
   command: "docker service create 
@@ -48,6 +54,7 @@
     --replicas 1 
     --name harvester-historic{{ service_index }}  
     --constraint node.labels.type==backend
+    --env FILE_TO_RUN='TwitterHarvester.py'
     {{ service_env_vars }}
     harvester-historic{{ service_index }}:latest"
   when: "inventory_hostname == groups['docker_swarm_manager'][0]"

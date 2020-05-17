@@ -1,6 +1,6 @@
 import tweepy
 import json
-from TwitterHarvesterFunc import mainFunction, all_keywords, all_regions, fst_half_keywords, MAX_COUNT
+from TwitterHarvesterFunc import mainFunction
 
 
 def main():

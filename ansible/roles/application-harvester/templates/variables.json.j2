@@ -10,8 +10,12 @@
     {% if (live | default(false)) %}
     "harvester_live": {
         "tweepy_auth": {
-            "auth_id": "{{ harvester_historic_tweepy_auth[service_index][0] }}",
-            "auth_key": "{{ harvester_historic_tweepy_auth[service_index][1] }}"
+            "auth_id": "{{ harvester_live_tweepy_auth[service_index][0] }}",
+            "auth_key": "{{ harvester_live_tweepy_auth[service_index][1] }}"
+        },
+        "access_token": {
+            "token_id": "{{ harvester_live_access_token[service_index][0] }}",
+            "token_key": "{{ harvester_live_access_token[service_index][1] }}"
         }
     }
     {% endif %}

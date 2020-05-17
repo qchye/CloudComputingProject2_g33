@@ -6,7 +6,7 @@
     path: "{{ harvester_path }}/live{{ service_index }}"
     recurse: yes
     state: directory
-    when: " 'backend_nodes' in group_names"
+  when: " 'backend_nodes' in group_names"
 
 - name: Copy files needed to build docker image on all backend nodes
   copy:
@@ -15,31 +15,37 @@
     owner: root
     group: root
     mode: 0755
-    with_items:
+  with_items:
     - couchdb_requests.py
     - TwitterHarvesterLive.py
     - TwitterHarvesterFunc.py
     - requirements.txt
     - Dockerfile
-    when: " 'backend_nodes' in group_names"
+  when: " 'backend_nodes' in group_names"
 
 - name: Copy variables file
   template:
     src: "variables.json.j2"
     dest: "{{ harvester_path }}/live{{ service_index }}/variables.json"
     mode: '0755'
-    when: " 'backend_nodes' in group_names"
+  when: " 'backend_nodes' in group_names"
 
 - name: Build image and with build args
   docker_image:
     name: harvester-live{{ service_index }}:latest
     build:
-        path: "{{ harvester_path }}/live{{ service_index }}"
-        pull: yes
-        use_config_proxy: yes
+      path: "{{ harvester_path }}/live{{ service_index }}"
+      pull: yes
+      use_config_proxy: yes
     force: yes
     source: build
-    when: " 'backend_nodes' in group_names"
+  when: " 'backend_nodes' in group_names"
+
+- name: Remove existing service
+  command:
+    cmd: docker service rm harvester-live{{ service_index }}
+  when: "inventory_hostname == groups['docker_swarm_manager'][0]"
+  ignore_errors: yes
 
 - name: Create Docker services for Live Harvester
   become: yes
@@ -48,6 +54,7 @@
     --replicas 1 
     --name harvester-live{{ service_index }}  
     --constraint node.labels.type==backend
+    --env FILE_TO_RUN='TwitterHarvesterLive.py'
     {{ service_env_vars }}
     harvester-live{{ service_index }}:latest"
   when: "inventory_hostname == groups['docker_swarm_manager'][0]"
