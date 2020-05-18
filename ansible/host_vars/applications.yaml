@@ -22,6 +22,38 @@ harvester_sa_username: "harvester"
 harvester_sa_password: "secret"
 harvester_build_proxy: "http://wwwproxy.unimelb.edu.au:8000/"
 
+
+harvester_historic_tweepy_auth: [
+    ["X7zGj3Ow4bPu05Em8WGGsko3G", "VkYgRxRkid5Ru4cpU7QineZIK2icnpRIHpZpVGaH8RlSYCJIQG"],
+    ["PmRzO6aE5UCwbU9e9hUWS0PKv","uV88V1zKlqyEIayVfWnLfCXyTKJngT2u6RUaGO4SpIEfeM4QLm"]
+]
+
+harvester_keywords: [
+    "airbnb", "stayz", "zomato", "deliveroo", "hungrypanda",
+    "lyft", "olacab", "#grab", "grabcar", "didirider", "menulog",
+    "doordash", "etsy", "gumtree", "fiverr", "cookitoo", "uber",
+    "taxify", "airtasker", "#freelancer", "parkhound", "campspace",
+    "upwork", "designcrowd", "ratesetter", "urbansitter", "airly",
+    "gocatch", "shebah", "bellhops", "channel40", "freightmatch",
+    "wrappli", "zoom2u", "carnextdoor", "camplify", "kindershare",
+    "quipmo", "thevolte", "bettercaring", "#blys", "classbento",
+    "helpling"
+]
+
+harvester_regions: [
+    "Melbourne", "Sydney", "Queensland", "Perth", "New South Wales", "Brisbane", "Tasmania",
+    "Canberra", "Darwin", "Adelaide", "Hobart", "Western Australia", "South Australia", "Victoria"
+]
+harvester_historic_services: 2
+harvester_live_services: 1
+
+harvester_live_tweepy_auth: [
+    ["7K0xu6SgVlnA7nJwNVVPZHgSD", "MHIEp3ibXDKkVSilriKdRFFduvJn55ow6zsYdcU710wyui1Nil"]
+]
+harvester_live_access_token: [
+    ["1252833883516624903-Ym6NDMEmTgaFhUK4dOcEHzsN4ZQfr6", "MIloYNYqgp6hwEREQBEEzri6DshW2UljsRhVdKxa5WiQM"]
+]
+
 ##
 # CouchDB
 ##
@@ -30,9 +62,9 @@ couchdb_path: "/opt/couchdb/data"
 cluster_size: 3
 user: admin
 pass: admin
-version: '3.0.0'
-cookie: 'grp_33'
-uuid: 'a192aeb9904e6590849337933b001159'
+version: "3.0.0"
+cookie: "grp_33"
+uuid: "a192aeb9904e6590849337933b001159"
 couch_db_twitter_database_name: twitter
-couch_service_account_uid: '1040'
+couch_service_account_uid: "1040"
 couch_service_account_group: admin
