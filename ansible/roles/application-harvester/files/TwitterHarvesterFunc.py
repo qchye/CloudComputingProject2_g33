@@ -27,6 +27,7 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
 
     totalExplored = 0
     totalUsefulTweets = 0
+    friendsIdList = []
     for keyword in query:
         print("Key word currently being searched: %s" % keyword)
         for tweet in tweepy.Cursor(api.search, q=[keyword], count=count, lang=language).items():
@@ -38,19 +39,20 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
             if single_result != False:
                 totalUsefulTweets += 1
                 # Tweets storing process here
-                couchdb_requests.couch_post(couch_vars, single_result)
+                valid = couchdb_requests.couch_post(couch_vars, single_result)
+                if valid:
+                    print("==================================GET FRIENDS ID================================================================")
+                    # Finding Friends of friends section
+                    user = tweet_json['user']
+                    user_id = user['id']
+                    friendsIdList += searchFriends(api, user_id)
 
-                print("==================================FINDING FRIENDS OF USER STARTS=============================================================================")
-                # Finding Friends of friends section
-                user = tweet_json['user']
-                user_id = user['id']
-                friendsIdList = searchFriends(api, user_id)
-                totalExplored, totalUsefulTweets = ProcessRelatedTweets(
-                    api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets, couch_vars)
 
             print("Total Explored: %d" % totalExplored)
             print("Total Useful Tweets: %d" % totalUsefulTweets)
 
+    print("===================================Finding friends tweets start here================================================")
+    totalExplored, totalUsefulTweets = ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets, couch_vars)
     return
 
 
@@ -69,7 +71,7 @@ def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored
         
         try:
             # Searching tweets from timeline of user
-            for tweet in tweepy.Cursor(api.user_timeline, id=Id, lang = 'en').items(1000):
+            for tweet in tweepy.Cursor(api.user_timeline, id=Id, lang = 'en').items(500):
                 totalExplored += 1
                 tweet_json = tweet._json
                 single_result = CheckFriendsTwitter(tweet_json, all_keywords, region)

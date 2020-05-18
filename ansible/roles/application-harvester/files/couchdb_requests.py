@@ -55,17 +55,20 @@ def couch_post(couch_vars ,tweet):
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 400:
            print("Bad Request was Sent")
+           return False
         elif e.response.status_code == 409:
             print("Document exists in DB")
+            return False
         else:
            print(e.__class__.__name__)
+           return False
     except Exception as e: 
         print('Failure Caused by ', e.__class__.__name__)
         return False
     else:
         print(response.json())
         print('It eventually worked', response.status_code)
-        return
+        return True
     
 
     
