@@ -45,14 +45,18 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
                     # Finding Friends of friends section
                     user = tweet_json['user']
                     user_id = user['id']
-                    friendsIdList += searchFriends(api, user_id)
+                    if len(friendsIdList) < 100000000:
+                        friendsIdList += searchFriends(api, user_id)
 
 
             print("Total Explored: %d" % totalExplored)
             print("Total Useful Tweets: %d" % totalUsefulTweets)
 
-    print("===================================Finding friends tweets start here================================================")
-    totalExplored, totalUsefulTweets = ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets, couch_vars)
+    if len(friendsIdList) > 0:
+        print("===================================Finding friends tweets start here================================================")
+        print("Num of friends: %d"%len(friendsIdList))
+        totalExplored, totalUsefulTweets = ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets, couch_vars, [])
+
     return
 
 
@@ -65,27 +69,34 @@ def searchFriends(api, target):
 
 
 # Finding friends' timeline tweets, also check if the tweets is useful, and record accordingly
-def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets, couch_vars):
-    
-    for Id in friendsIdList:
-        
-        try:
-            # Searching tweets from timeline of user
-            for tweet in tweepy.Cursor(api.user_timeline, id=Id, lang = 'en').items(500):
-                totalExplored += 1
-                tweet_json = tweet._json
-                single_result = CheckFriendsTwitter(tweet_json, all_keywords, region)
-                if single_result != False:
-                    couchdb_requests.couch_post(couch_vars, single_result)
-                    totalUsefulTweets += 1
-                #print("Total Explored: %d" % totalExplored)
-                #print("Total Useful Tweets: %d" % totalUsefulTweets)
-                
-        except Exception:  # Might because the user is private, so need to catch the exception.
-            print(Exception)
-            pass
+def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets, couch_vars, friendsoffriends):
+    if len(friendsIdList) > 0:
 
-    return (totalExplored, totalUsefulTweets)
+        for Id in friendsIdList:
+        
+            try:
+                # Searching tweets from timeline of user
+                for tweet in tweepy.Cursor(api.user_timeline, id=Id, lang = 'en').items(500):
+                    totalExplored += 1
+                    tweet_json = tweet._json
+                    single_result = CheckFriendsTwitter(tweet_json, all_keywords, region)
+                    if single_result != False:
+                        valid = couchdb_requests.couch_post(couch_vars, single_result)
+                        totalUsefulTweets += 1
+                        if valid:
+                            print("==================================GET FRIENDS OF FRIENDS ID===========================================================")
+                            # Finding Friends of friends section
+                            user = tweet_json['user']
+                            user_id = user['id']
+                            if len(friendsoffriends) < 100000000:
+                                friendsoffriends += searchFriends(api, user_id)
+            except Exception:  # Might because the user is private, so need to catch the exception.
+                print(Exception)
+                pass
+
+        return ProcessRelatedTweets(api, friendsoffriends,  all_keywords, region, totalExplored, totalUsefulTweets, couch_vars, [])
+    else:
+        return (totalExplored, totalUsefulTweets)
 
 
 # filter tweets: only the one match region with the keyword
