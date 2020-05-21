@@ -38,7 +38,6 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
                                tweet_mode='extended', max_id=lastId)
 
             tweet_json = tweet[-1]._json
-            lastId = tweet_json['id'] - 1
 
             totalExplored += 1
             single_result = CheckTwitter(tweet_json, keyword, region)
@@ -55,6 +54,8 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
                     user_id = user['id']
                     if len(friendsIdList) < 100000000:
                         friendsIdList += searchFriends(api, user_id)
+
+            lastId = tweet_json['id'] - 1
 
             print("Total Explored: %d" % totalExplored)
             print("Total Useful Tweets: %d" % totalUsefulTweets)
