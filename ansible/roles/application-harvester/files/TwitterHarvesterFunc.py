@@ -35,7 +35,7 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
         # for tweet in tweepy.Cursor(api.search, q=[keyword], count=count, lang=language).items():
         while (tweet):
             tweet = api.search(q=[keyword], count=count,
-                               tweet_mode='extended', max_id=lastId)
+                               lang=language, max_id=lastId)
 
             tweet_json = tweet[-1]._json
 
