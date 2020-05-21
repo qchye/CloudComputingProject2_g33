@@ -29,12 +29,14 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
     totalUsefulTweets = 0
     friendsIdList = []
     for keyword in query:
-        page = 1
         print("Key word currently being searched: %s" % keyword)
-        # for tweet in tweepy.Cursor(api.search, q=[keyword], count=count, lang=language).items():
-        while (api.search(page=page)):
-            tweets = api.search(page=page, q=[keyword], count=count,
-                                lang=language)
+        lastId = None
+        tweets = True
+
+        while (tweets):
+            tweets = api.search(q=[keyword], count=count,
+                                lang=language, max_id=lastId)
+
             if tweets:
                 for tweet in tweets:
                     tweet_json = tweet._json
@@ -50,16 +52,17 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
                         if valid:
                             print(
                                 "==================================GET FRIENDS ID================================================================")
-                            # Finding Friends of friends section
-                            user = tweet_json['user']
-                            user_id = user['id']
-                            if len(friendsIdList) < 100000000:
-                                friendsIdList += searchFriends(api, user_id)
+                        # Finding Friends of friends section
+                        user = tweet_json['user']
+                        user_id = user['id']
+                        if len(friendsIdList) < 100000000:
+                            friendsIdList += searchFriends(api, user_id)
+                        print("hello2")
 
-                        print("Total Explored: %d" % totalExplored)
-                        print("Total Useful Tweets: %d" % totalUsefulTweets)
+                    print("Total Explored: %d" % totalExplored)
+                    print("Total Useful Tweets: %d" % totalUsefulTweets)
 
-            page += 1
+                lastId = tweets[-1]._json['id'] - 1
 
     if len(friendsIdList) > 0:
         print("===================================Finding friends tweets start here================================================")
@@ -86,7 +89,6 @@ def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored
 
             try:
                 # Searching tweets from timeline of user
-                # for tweet in tweepy.Cursor(api.user_timeline, id=Id, lang='en').items(500):
                 tweets = api.user_timeline(user_id=Id, count=500, lang='en')
 
                 for tweet in tweets:
