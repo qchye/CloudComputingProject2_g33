@@ -52,13 +52,13 @@ def GetLocalGig():
     #print(statemap)
     statekeys = list(statemap.keys())
     statevalues = list(statemap.values())
-    #response = couchdb_requests.couch_get_localGig({"COUCHDB_BASE_URL": "http://172.26.133.111:8080/", "USERNAME": "admin", "PASSWORD": "admin"},
-             #         "_design/LocalGig/",
-             #         "_view/local-gig-view",
-             #         "?reduce=true&group_level=2")
+    response = couchdb_requests.couch_get_localGig({"COUCHDB_BASE_URL": "http://172.26.133.111:8080/", "USERNAME": "admin", "PASSWORD": "admin"},
+                      "_design/LocalGig/",
+                      "_view/local-gig-view",
+                     "?reduce=true&group_level=2")
 
-    #for i in response["rows"]:
-     #   print("State: %s"%i["key"][0] + " ,Keyword: %s"%i["key"][1] + " ,Count: %d"%i["value"])
+    for i in response["rows"]:
+       print("State: %s"%i["key"][0] + " ,Keyword: %s"%i["key"][1] + " ,Count: %d"%i["value"])
     fig, ax = plt.subplots()
     ax.bar(statekeys, statevalues)
     ax.set_ylabel('Count')
@@ -66,6 +66,6 @@ def GetLocalGig():
     ax.set_xticklabels(statekeys)
     for a,b in zip(statekeys, statevalues):
         plt.text(a, b, str(b))
-    fig.savefig('my_plot.png')
-    return True
+    fig.savefig('files/app/img/stateGig.png')
+    return "files/app/img/stateGig.png"
 GetLocalGig()
