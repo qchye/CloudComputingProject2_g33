@@ -40,7 +40,6 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
             if tweets:
                 for tweet in tweets:
                     tweet_json = tweet._json
-                    print(tweet_json)
 
                     totalExplored += 1
                     single_result = CheckTwitter(tweet_json, keyword, region)
@@ -53,12 +52,11 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
                         if valid:
                             print(
                                 "==================================GET FRIENDS ID================================================================")
-                        # Finding Friends of friends section
-                        user = tweet_json['user']
-                        user_id = user['id']
-                        if len(friendsIdList) < 100000000:
-                            friendsIdList += searchFriends(api, user_id)
-                        print("hello2")
+                            # Finding Friends of friends section
+                            user = tweet_json['user']
+                            user_id = user['id']
+                            if len(friendsIdList) < 100000000:
+                                friendsIdList += searchFriends(api, user_id)
 
                     print("Total Explored: %d" % totalExplored)
                     print("Total Useful Tweets: %d" % totalUsefulTweets)
