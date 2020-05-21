@@ -40,6 +40,7 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
             if tweets:
                 for tweet in tweets:
                     tweet_json = tweet._json
+                    print(tweet_json)
 
                     totalExplored += 1
                     single_result = CheckTwitter(tweet_json, keyword, region)
