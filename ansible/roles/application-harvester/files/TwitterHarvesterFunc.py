@@ -29,10 +29,17 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
     totalUsefulTweets = 0
     friendsIdList = []
     for keyword in query:
+        lastId = None
+        tweet = True
         print("Key word currently being searched: %s" % keyword)
-        for tweet in tweepy.Cursor(api.search, q=[keyword], count=count, lang=language).items():
+        # for tweet in tweepy.Cursor(api.search, q=[keyword], count=count, lang=language).items():
+        while (tweet):
+            tweet = api.search(q=[keyword], count=count,
+                               tweet_mode='extended', max_id=lastId)
 
-            tweet_json = tweet._json
+            tweet_json = tweet[-1]._json
+            lastId = tweet_json['id'] - 1
+
             totalExplored += 1
             single_result = CheckTwitter(tweet_json, keyword, region)
             # We only interested the tweets in Australia and keyword in text
@@ -41,21 +48,22 @@ def mainFunction(api, query, all_keywords, count, language, region, couch_vars):
                 # Tweets storing process here
                 valid = couchdb_requests.couch_post(couch_vars, single_result)
                 if valid:
-                    print("==================================GET FRIENDS ID================================================================")
+                    print(
+                        "==================================GET FRIENDS ID================================================================")
                     # Finding Friends of friends section
                     user = tweet_json['user']
                     user_id = user['id']
                     if len(friendsIdList) < 100000000:
                         friendsIdList += searchFriends(api, user_id)
 
-
             print("Total Explored: %d" % totalExplored)
             print("Total Useful Tweets: %d" % totalUsefulTweets)
 
     if len(friendsIdList) > 0:
         print("===================================Finding friends tweets start here================================================")
-        print("Num of friends: %d"%len(friendsIdList))
-        totalExplored, totalUsefulTweets = ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets, couch_vars, [])
+        print("Num of friends: %d" % len(friendsIdList))
+        totalExplored, totalUsefulTweets = ProcessRelatedTweets(
+            api, friendsIdList, all_keywords, region, totalExplored, totalUsefulTweets, couch_vars, [])
 
     return
 
@@ -73,18 +81,21 @@ def ProcessRelatedTweets(api, friendsIdList, all_keywords, region, totalExplored
     if len(friendsIdList) > 0:
 
         for Id in friendsIdList:
-        
+
             try:
                 # Searching tweets from timeline of user
-                for tweet in tweepy.Cursor(api.user_timeline, id=Id, lang = 'en').items(500):
+                for tweet in tweepy.Cursor(api.user_timeline, id=Id, lang='en').items(500):
                     totalExplored += 1
                     tweet_json = tweet._json
-                    single_result = CheckFriendsTwitter(tweet_json, all_keywords, region)
+                    single_result = CheckFriendsTwitter(
+                        tweet_json, all_keywords, region)
                     if single_result != False:
-                        valid = couchdb_requests.couch_post(couch_vars, single_result)
+                        valid = couchdb_requests.couch_post(
+                            couch_vars, single_result)
                         totalUsefulTweets += 1
                         if valid:
-                            print("==================================GET FRIENDS OF FRIENDS ID===========================================================")
+                            print(
+                                "==================================GET FRIENDS OF FRIENDS ID===========================================================")
                             # Finding Friends of friends section
                             user = tweet_json['user']
                             user_id = user['id']
@@ -116,15 +127,16 @@ def CheckTwitter(tweet, keyword, region):
 
 # As going into friend's list, need to check all keywords
 def CheckFriendsTwitter(tweet, all_keywords, region):
-    
+
     loc = getLocation(tweet)
     text = tweet['text']
-    
+
     if (loc in region) and (not isRetweet(text)):
         for keyword in all_keywords:
             if (isUseful(keyword, text)):
-                extracted_result = extractTweetImpAttr(tweet, loc, keyword, text)
-                
+                extracted_result = extractTweetImpAttr(
+                    tweet, loc, keyword, text)
+
                 return extracted_result
 
     return False
