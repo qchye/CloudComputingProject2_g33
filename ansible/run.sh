@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-. ../../openrc.sh; ansible-playbook -i hosts assignment2.yaml -v
+. ../../openrc.sh; ansible-playbook -i hosts assignment2.yaml --tags="frontend"
