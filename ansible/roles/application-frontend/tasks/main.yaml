@@ -35,12 +35,12 @@
     source: build
   when: " 'frontend_nodes' in group_names"
 
-# - name: Run the creation of analysis documents in couchdb
-#   become: yes
-#   docker_container:
-#     name: couchdb-analysis-documents
-#     image: couchdb-analysis-documents:latest
-#   when: " 'frontend_nodes' in group_names"
+- name: Run the creation of analysis documents in couchdb
+  become: yes
+  docker_container:
+    name: couchdb-analysis-documents
+    image: couchdb-analysis-documents:latest
+  when: " 'frontend_nodes' in group_names"
 
 - name: Copy files over for building frontend application
   copy:
