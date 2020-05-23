@@ -66,6 +66,6 @@ def GetLocalGig():
     ax.set_xticklabels(statekeys)
     for a,b in zip(statekeys, statevalues):
         plt.text(a, b, str(b))
-    fig.savefig('files/app/img/stateGig.png')
-    return "files/app/img/stateGig.png"
+    fig.savefig('img/stateGig.png')
+    return "img/stateGig.png"
 GetLocalGig()
