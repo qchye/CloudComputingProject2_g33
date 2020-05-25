@@ -141,8 +141,7 @@ def GetLocalGig():
                       "_view/local-gig-view",
                      "?reduce=true&group_level=2")
 
-    for i in response["rows"]:
-       print("State: %s"%i["key"][0] + " ,Keyword: %s"%i["key"][1] + " ,Count: %d"%i["states_dict[location]"])
+
     fig, ax = plt.subplots()
     ax.bar(statekeys, statevalues)
     ax.set_ylabel('Count')
@@ -154,7 +153,7 @@ def GetLocalGig():
     return "img/stateGig.png"
 #GetLocalGig()
 
-def Get_income_tweet():
+def get_income_tweet():
     variables = {}
     variables = load_variables()
 
@@ -183,7 +182,7 @@ def Get_income_tweet():
     incomes = list(city_income_dict.values())
     tweet_num = list(city_count_dict.values())
     states = list(city_count_dict.keys())
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10,10))
     ax.scatter(incomes, tweet_num)
     ax.set_xlabel('Mean Income ($)')
     ax.set_ylabel('Number of Tweets')
@@ -193,11 +192,11 @@ def Get_income_tweet():
     fig.savefig('img/incomevstweets.png')
     return "img/incomevstweets.png"
 
-Get_income_tweet()
+get_income_tweet()
 
 
 
-def Get_unemployment_tweet():
+def get_unemployment_tweet():
     variables = {}
     variables = load_variables()
     response = couchdb_requests.couch_get_view(variables, "aurin-employment-sa2/",
@@ -248,7 +247,7 @@ def Get_unemployment_tweet():
         for i in range(len(value)):
             total[i] += value[i]
 
-    plt_2 = plt.figure(2)
+    plt_2 = plt.figure(2, figsize=(10,10))
     plt.plot(x_axis, total)
     plt.xlabel('year')
     plt.ylabel('no. of people unemployed')
@@ -268,7 +267,7 @@ def Get_unemployment_tweet():
     plt_3.savefig('img/tweets_vs_year_state.png')
 
     images = ['img/unemp_vs_year_state.png', 'img/unemp_vs_year.png', 'img/tweets_vs_year_state.png']
-Get_unemployment_tweet()
+get_unemployment_tweet()
 
 
 def get_business_popularity():
@@ -284,7 +283,7 @@ def get_business_popularity():
     y_pos = list(keyword_count_dict.keys())
     x_pos = list(keyword_count_dict.values())
     plt.rcdefaults()
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10,10))
     y_arrange = np.arange(len(y_pos))
     ax.barh(y_arrange, x_pos, align='center')
     ax.set_yticks(y_arrange)
@@ -317,7 +316,7 @@ def get_business_pop_location():
         y_pos = list(keyword_loc_dict[state].keys())
         x_pos = list(keyword_loc_dict[state].values())
         plt.rcdefaults()
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(10,10))
         y_arrange = np.arange(len(y_pos))
         ax.barh(y_arrange, x_pos, align='center')
         ax.set_yticks(y_arrange)
