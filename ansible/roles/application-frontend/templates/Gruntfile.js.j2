@@ -1,0 +1,25 @@
+module.exports = function (grunt) {
+  grunt
+    .initConfig({
+      "couch-compile": {
+        dbs: {
+          files: {
+            "/tmp/twitter.json": "couchdb/twitter/*"
+          }
+        }
+      },
+      "couch-push": {
+        options: {
+          user: "{{ user }}",
+          pass: "{{ pass }}"
+        },
+        twitter: {
+          files:{
+            "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/{{ couch_db_twitter_database_name }}" : "/tmp/twitter.json"
+          }
+        }
+      }
+    });
+  console.log(JSON.stringify(grunt.config.get()));
+  grunt.loadNpmTasks("grunt-couch");
+};

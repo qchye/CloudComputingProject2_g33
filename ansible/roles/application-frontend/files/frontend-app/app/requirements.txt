@@ -1,0 +1,7 @@
+flask
+Flask
+requests
+requests_toolbelt
+textblob
+pandas
+matplotlib
