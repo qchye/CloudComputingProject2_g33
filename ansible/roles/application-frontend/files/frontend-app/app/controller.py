@@ -1,12 +1,8 @@
 from collections import defaultdict
-import numpy as np
 import matplotlib.pyplot as plt
 import couchdb_requests
 import os
 import pandas as pd
-# to account for matplotlib version <3.1
-import matplotlib
-matplotlib.use('Agg')
 
 
 # plot the chart: stateGig
