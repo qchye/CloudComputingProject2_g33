@@ -18,9 +18,6 @@ def stateCount():
 
     return render_template('home.html', path=filepath, searched= True)
 
-@app.route('/income_tweets')
-def stateCount():
-    filepath = controller.GetLocalGig()
 
     return render_template('home.html', path=filepath, searched= True)
 # Scenario

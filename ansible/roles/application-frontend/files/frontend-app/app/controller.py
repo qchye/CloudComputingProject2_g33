@@ -186,14 +186,15 @@ def Get_income_tweet():
     states = list(city_count_dict.keys())
     fig, ax = plt.subplots()
     ax.scatter(incomes, tweet_num)
-
+    ax.set_xlabel('Mean Income ($)')
+    ax.set_ylabel('Number of Tweets')
     for i in range(len(incomes)):
         ax.annotate(states[i], (incomes[i], tweet_num[i]))
     
     fig.savefig('img/incomevstweets.png')
     return "img/incomevstweets.png"
 
-# Get_income_tweet()
+Get_income_tweet()
 
 
 
@@ -256,7 +257,7 @@ def Get_unemployment_tweet():
     plt_2.savefig('img/unemp_vs_year.png')
     x_axis_4 = list(year_count.keys())
     y_axis_4 = []
-    print(year_count)
+    
     for year in x_axis:
         y_axis_4.append(year_count[year])
     
@@ -265,9 +266,9 @@ def Get_unemployment_tweet():
     plt.xlabel('year')
     plt.ylabel('no. of gig economy tweets')
     plt.title('Gig Economy Tweets vs year')
-    plt_3.savefig('img/unemp_vs_year_state.png')
+    plt_3.savefig('img/tweets_vs_year_state.png')
 
-    images = ['img/unemp_vs_year_state.png', 'img/unemp_vs_year.png', 'img/unemp_vs_year_state.png']
+    images = ['img/unemp_vs_year_state.png', 'img/unemp_vs_year.png', 'img/tweets_vs_year_state.png']
 Get_unemployment_tweet()
 
 
@@ -296,7 +297,7 @@ def get_business_popularity():
     fig.savefig('img/keyword_pop.png')
     return "img/keyword_pop.png"
 
-
+get_business_popularity()
 
 def get_business_pop_location():
     #keyword count per location
