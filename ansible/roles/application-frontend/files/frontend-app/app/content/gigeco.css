@@ -56,14 +56,8 @@ p {
   font-size: 30px;
 }
 
-.column {
-  flex: 50%;
-}
-
-.row {
-  display: flex;
-}
-
-#sentiment_img {
-  display: none;
+.sentiment-title-border {
+  text-align: center;
+  border: 5px outset #07a4a0;
+  border-radius: 25px;
 }

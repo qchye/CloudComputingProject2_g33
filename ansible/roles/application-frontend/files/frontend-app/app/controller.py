@@ -16,6 +16,7 @@ def GetLocalGig():
                                                    "?reduce=true&group_level=1")
     statemap = defaultdict(int)
     for i in response["rows"]:
+        print("State: %s" % i["key"][0] + " ,Count: %d" % i["value"])
         location = i["key"][0]
         value = i["value"]
 
@@ -74,6 +75,8 @@ def GetMedAgePopulation():
     statemap = defaultdict(int)
     freq = defaultdict(int)
 
+    # going through the twitter data from couchdb
+    # do data processing
     for i in response["rows"]:
         location = i["key"]
         value = i["value"]["med_year"]
@@ -124,12 +127,14 @@ def GetMedAgePopulation():
             statemap[location] += value
             freq[location] += 1
 
+    # get the avg
     for state, value in statemap.items():
         statemap[state] = round(value/freq[state], 1)
 
     statekeys = list(statemap.keys())
     statevalues = list(statemap.values())
 
+    # bar chart plotting
     fig, ax = plt.subplots()
     ax.bar(statekeys, statevalues, color='red')
     ax.set_ylabel('Age')
@@ -139,82 +144,8 @@ def GetMedAgePopulation():
         plt.text(a, b + 0.6, str(b), horizontalalignment='center',
                  verticalalignment='center')
     fig.savefig('img/medianAge.png')
+
     return "img/medianAge.png"
-
-
-def GetWAPopPercentage():
-    response = couchdb_requests.couch_get_agePopulation({"COUCHDB_BASE_URL": "http://172.26.133.111:8080/", "USERNAME": "admin", "PASSWORD": "admin"},
-                                                        "_design/population/",
-                                                        "_view/population")
-    statemap = defaultdict(int)
-    freq = defaultdict(int)
-
-    for i in response["rows"]:
-        location = i["key"]
-        value = i["value"]["working_age_pop_pr100"]
-
-        if location == "Greater Melbourne":
-            statemap["VIC"] += value
-            freq["VIC"] += 1
-        elif location == "Greater Adelaide":
-            statemap["SA"] += value
-            freq["SA"] += 1
-        elif location == "Greater Brisbane":
-            statemap["QLD"] += value
-            freq["QLD"] += 1
-        elif location == "Greater Darwin":
-            statemap["NT"] += value
-            freq["NT"] += 1
-        elif location == "Greater Hobart":
-            statemap["TAS"] += value
-            freq["TAS"] += 1
-        elif location == "Greater Perth":
-            statemap["WA"] += value
-            freq["WA"] += 1
-        elif location == "Greater Sydney":
-            statemap["NSW"] += value
-            freq["NSW"] += 1
-        elif location == "Rest of Vic.":
-            statemap["VIC"] += value
-            freq["VIC"] += 1
-        elif location == "Rest of SA":
-            statemap["SA"] += value
-            freq["SA"] += 1
-        elif location == "Rest of Qld":
-            statemap["QLD"] += value
-            freq["QLD"] += 1
-        elif location == "Rest of NSW":
-            statemap["NSW"] += value
-            freq["NSW"] += 1
-        elif location == "Rest of NT":
-            statemap["NT"] += value
-            freq["NT"] += 1
-        elif location == "Rest of Tas.":
-            statemap["TAS"] += value
-            freq["TAS"] += 1
-        elif location == "Rest of WA":
-            statemap["WA"] += value
-            freq["WA"] += 1
-        else:
-            statemap[location] += value
-            freq[location] += 1
-
-    for state, value in statemap.items():
-        statemap[state] = round(value/freq[state], 1)
-
-    statekeys = list(statemap.keys())
-    statevalues = list(statemap.values())
-
-    fig, ax = plt.subplots()
-    ax.bar(statekeys, statevalues, color='magenta')
-    ax.set_ylabel('Population (%)')
-    ax.set_title('Working Age Population for States of Australia in 2017')
-    ax.set_xticklabels(statekeys)
-    for a, b in zip(statekeys, statevalues):
-        plt.text(a, b + 1, str(b), horizontalalignment='center',
-                 verticalalignment='center')
-    fig.savefig('img/workingAgePop.png')
-    return "img/workingAgePop.png"
 
 
 def GetElderlyPopPercentage():
@@ -224,6 +155,8 @@ def GetElderlyPopPercentage():
     statemap = defaultdict(int)
     freq = defaultdict(int)
 
+    # going through the twitter data from couchdb
+    # do data processing
     for i in response["rows"]:
         location = i["key"]
         value = i["value"]["elderly_pop_pr100"]
@@ -274,12 +207,14 @@ def GetElderlyPopPercentage():
             statemap[location] += value
             freq[location] += 1
 
+    # get the avg (after rounding to 2 decimal places)
     for state, value in statemap.items():
         statemap[state] = round(value/freq[state], 1)
 
     statekeys = list(statemap.keys())
     statevalues = list(statemap.values())
 
+    # bar chart plotting
     fig, ax = plt.subplots()
     ax.bar(statekeys, statevalues, color='blue')
     ax.set_ylabel('Population (%)')
@@ -289,7 +224,55 @@ def GetElderlyPopPercentage():
         plt.text(a, b + 0.5, str(b), horizontalalignment='center',
                  verticalalignment='center')
     fig.savefig('img/elderlyAgePop.png')
+
     return "img/elderlyAgePop.png"
+
+
+# Initialise the state map with the states of Australia with zero value
+def initialiseStateMap():
+    state_keys = ['VIC', 'SA', 'QLD', 'NT', 'TAS', 'WA', 'NSW']
+    statemap = {key: 0 for key in state_keys}
+
+    return statemap
+
+
+# check if the data is useless (all states have zero value)
+def checkAllSentimentZero(statemap):
+    length = 0
+    for value in statemap.values():
+        if (value == 0):
+            length += 1
+
+    return len(statemap) == length
+
+
+# Get all the keywords with data
+def GetUsefulKeywords():
+    response = couchdb_requests.couch_get_localGig({"COUCHDB_BASE_URL": "http://172.26.133.111:8080/", "USERNAME": "admin", "PASSWORD": "admin"},
+                                                   "_design/GigSentimental/",
+                                                   "_view/sentimentOnStateKeywordYear",
+                                                   "?reduce=true&group_level=3")
+
+    usefulKeywords = []
+    keywordsList = ['airbnb', 'airly', 'airtasker', 'bettercaring', 'camplify', 'carnextdoor', 'classbento', 'deliveroo', 'designcrowd', 'doordash', 'ebay', 'etsy', 'fiverr', 'gocatch', 'gumtree', 'helpling', 'homeaway',
+                    'hometime', 'lyft', 'menulog', 'olacab', 'parkhound', 'pawshake', 'ratesetter', 'redbubble', 'shebah', 'sidekicker', 'spacer', 'stayz', 'stellar', 'taxify', 'uber', 'upwork', 'urbansitter', 'zomato', 'zoom2u']
+    locList = ['Melbourne', 'Adelaide', 'Brisbane', 'Canberra', 'Darwin', 'Hobart', 'Perth', 'Sydney', 'Victoria',
+               'South Australia', 'Queensland', 'New South Wales', 'Northern Territory', 'Tasmania', 'Western Australia']
+
+    for i in response["rows"]:
+        location = i["key"][0]
+        word = i["key"][1]
+        year = i["key"][2]
+
+        # only want data for the particular keyword selected in 2017
+        if (word in keywordsList and year == "2017"):
+
+            if location in locList:
+                # check if the keyword already exists in the list or not
+                if (word not in usefulKeywords):
+                    usefulKeywords.append(word)
+
+    return usefulKeywords
 
 
 def GetKeywordSentiment(keyword):
@@ -297,7 +280,8 @@ def GetKeywordSentiment(keyword):
                                                    "_design/GigSentimental/",
                                                    "_view/sentimentOnStateKeywordYear",
                                                    "?reduce=true&group_level=3")
-    statemap = defaultdict(int)
+
+    statemap = initialiseStateMap()
     freq = defaultdict(int)
 
     for i in response["rows"]:
@@ -306,6 +290,7 @@ def GetKeywordSentiment(keyword):
         year = i["key"][2]
 
         # only want data for the particular keyword selected in 2017
+        # data processing
         if (word == keyword and year == "2017"):
 
             value = i["value"]
@@ -334,7 +319,6 @@ def GetKeywordSentiment(keyword):
             elif location == "Sydney":
                 statemap["NSW"] += value
                 freq["NSW"] += 1
-                print(statemap["NSW"])
             elif location == "Victoria":
                 statemap["VIC"] += value
                 freq["VIC"] += 1
@@ -347,7 +331,6 @@ def GetKeywordSentiment(keyword):
             elif location == "New South Wales":
                 statemap["NSW"] += value
                 freq["NSW"] += 1
-                print(statemap["NSW"])
             elif location == "Northern Territory":
                 statemap["NT"] += value
                 freq["NT"] += 1
@@ -361,23 +344,55 @@ def GetKeywordSentiment(keyword):
                 statemap[location] += value
                 freq[location] += 1
 
+    # get the avg (rounding to 2 decimal places)
     for state, value in statemap.items():
-        statemap[state] = round(value/freq[state], 2)
-        print("State: %s" % state + ", Count: %d" %
-              value + ", year = %s" % year)
+        if (freq[state] != 0):
+            value = (value/freq[state] * 100)
+            statemap[state] = round(value, 2)
 
-    print(statemap)
+    # store the state with the lowest sentiment value and the sentiment value
+    (lowestSentState, lowestSentValue) = min((key, value)
+                                             for key, value in statemap.items() if value is not 0)
+    isHypothesisTrue = False
+
+    # assume negative sentiment initially
+    isTasNegative = True
+    isSANegative = True
+
+    # hypothesis true
+    if (statemap["TAS"] < 0 and statemap["SA"] < 0):
+        isHypothesisTrue = True
+
+    # check if tasmania has positive sentiment
+    if (statemap["TAS"] > 0):
+        isTasNegative = False
+
+    # check if south australia has positive sentiment
+    if (statemap["SA"] > 0):
+        isSANegative = False
+
     statekeys = list(statemap.keys())
     statevalues = list(statemap.values())
 
+    # bar chart plotting
     fig, ax = plt.subplots()
+
+    # draw a line on y=0
+    plt.axhline(y=0, linestyle='-', color='black')
+
     ax.bar(statekeys, statevalues, color='green')
     ax.set_ylabel('Sentiment (%)')
-    ax.set_title('Sentiment Value on Gig Economy Based on \"' +
+    ax.set_title('Sentiment Value on Gig Economy Based \n on \"' +
                  keyword + '\" keyword ' + 'for States of Australia', loc='center')
     ax.set_xticklabels(statekeys)
     for a, b in zip(statekeys, statevalues):
-        plt.text(a, b, str(b), horizontalalignment='center',
-                 verticalalignment='center')
+        if (b == 0):
+            plt.text(a, b, "", horizontalalignment='center')
+        elif (b < 0):
+            plt.text(a, b - 1.7, str(b), horizontalalignment='center')
+        else:
+            plt.text(a, b + 0.4, str(b), horizontalalignment='center')
+
     fig.savefig('img/keywordSentiment.png')
-    return "img/keywordSentiment.png"
+
+    return ("img/keywordSentiment.png", isHypothesisTrue, isTasNegative, isSANegative, lowestSentState, lowestSentValue)

@@ -3,6 +3,8 @@ from flask import Flask, render_template, flash, redirect, url_for, session, req
 
 app = Flask(__name__, static_url_path='')
 
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
 # Index
 @app.route('/')
 def index():
@@ -24,23 +26,25 @@ def scenario():
         if id == "rohan":
             return render_template('about.html')
         if id == "alvin":
-            return render_template('about.html')
+            return render_template('state_sentiment_pop.html')
 
 
+# Sentiment vs Elderly Population
 @app.route('/sentiment_pop', methods=['GET', 'POST'])
 def sentimentPop():
     median_age_path = controller.GetMedAgePopulation()
-    wa_pop_path = controller.GetWAPopPercentage()
     elderly_pop_path = controller.GetElderlyPopPercentage()
+    keywords_with_data = controller.GetUsefulKeywords()
 
     if request.method == 'POST':
         selected = request.form['keyword']
-        keyword_sentiment_path = controller.GetKeywordSentiment(selected)
-        print("here " + selected)
 
-        return render_template('state_sentiment_pop.html', median_age_path=median_age_path, wa_pop_path=wa_pop_path, elderly_pop_path=elderly_pop_path, keyword_sentiment_path=keyword_sentiment_path)
+        (keyword_sentiment_path, isHypothesisTrue, isTasNegative, isSANegative,
+         lowestSentState, lowestSentValue) = controller.GetKeywordSentiment(selected)
 
-    return render_template('state_sentiment_pop.html', median_age_path=median_age_path, wa_pop_path=wa_pop_path, elderly_pop_path=elderly_pop_path)
+        return render_template('state_sentiment_pop.html', median_age_path=median_age_path, elderly_pop_path=elderly_pop_path, keyword_sentiment_path=keyword_sentiment_path, keywords_with_data=keywords_with_data, isHypothesisTrue=isHypothesisTrue, isTasNegative=isTasNegative, isSANegative=isSANegative, lowestSentState=lowestSentState, lowestSentValue=lowestSentValue)
+
+    return render_template('state_sentiment_pop.html', median_age_path=median_age_path, elderly_pop_path=elderly_pop_path, keywords_with_data=keywords_with_data)
 
 
 # Getting css file
