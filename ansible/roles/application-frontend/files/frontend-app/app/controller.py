@@ -172,8 +172,7 @@ def Get_income_tweet():
     city_income_dict = state_sorter_aurin(city_income_dict)
     response = couchdb_requests.couch_get_view(variables, "twitter/",
                     "_design/location-keyword/",
-                    "_view/locationvskeyword/", "?reduce=true&group_level=1")
-    
+                    "_view/locationvskeyword/", "?reduce=true&group_level=1")    
     city_count_dict = {}
     for row in response["rows"]:
         city_count_dict[row["key"][0]] = row["value"] 

@@ -66,6 +66,7 @@ version: "3.0.0"
 cookie: "grp_33"
 uuid: "a192aeb9904e6590849337933b001159"
 couch_db_twitter_database_name: twitter
+
 couch_service_account_uid: "1040"
 couch_service_account_group: admin
 

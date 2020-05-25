@@ -5,6 +5,7 @@ module.exports = function (grunt) {
         dbs: {
           files: {
             "/tmp/twitter.json": "couchdb/twitter/*"
+            "/tmp/aurin
           }
         }
       },
@@ -18,6 +19,7 @@ module.exports = function (grunt) {
             "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/{{ couch_db_twitter_database_name }}" : "/tmp/twitter.json"
           }
         }
+
       }
     });
   console.log(JSON.stringify(grunt.config.get()));
