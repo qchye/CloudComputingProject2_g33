@@ -22,7 +22,8 @@ def scenario():
         if id == "yun":
             return render_template('about.html')
         if id == "rohan":
-            return render_template('about.html')
+            filepath = controller.get_income_tweet()
+            return render_template('income_tweet.html', path=filepath)
         if id == "alvin":
             return render_template('about.html')
 
