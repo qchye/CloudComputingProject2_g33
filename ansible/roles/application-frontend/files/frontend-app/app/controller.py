@@ -135,7 +135,6 @@ def GetLocalGig():
 
     statemap = state_sorter_twitter(statemap)
 
-    print(statemap)
     statekeys = list(statemap.keys())
     statevalues = list(statemap.values())
     response = couchdb_requests.couch_get_view(variables, "twitter/",
@@ -160,11 +159,49 @@ def GetLocalGig():
 def Getsentiment():
     variables = {}
     variables = load_variables()
-    response = couchdb_requests.couch_get_unemployVSsentiment(variables,
-                                                              "twitter/","_design/regionVSsentiment/",
+    response = couchdb_requests.couch_get_view(variables,
+                                                              "twitter/", "_design/regionVSsentiment/",
                                                               "_view/senti",
                                                               "?reduce=true&group_level=1")
-    statemap = state_sorter_twitter(statemap)
+    statemap = defaultdict(int)
+    for i in response["rows"]:
+        location = i["key"][0]
+        # calulate the sentiment value for each region.
+        value = i["value"]['sum']/i["value"]['count']
+
+        # group value by state
+        if location == "Melbourne":
+            statemap["VIC"] += value
+        elif location == "Adelaide":
+            statemap["SA"] += value
+        elif location == "Brisbane":
+            statemap["QLD"] += value
+        elif location == "Canberra":
+            statemap["NSW"] += value
+        elif location == "Darwin":
+            statemap["NT"] += value
+        elif location == "Hobart":
+            statemap["TAS"] += value
+        elif location == "Perth":
+            statemap["WA"] += value
+        elif location == "Sydney":
+            statemap["NSW"] += value
+        elif location == "Victoria":
+            statemap["VIC"] += value
+        elif location == "South Australia":
+            statemap["SA"] += value
+        elif location == "Queensland":
+            statemap["QLD"] += value
+        elif location == "New South Wales":
+            statemap["NSW"] += value
+        elif location == "Northern Territory":
+            statemap["NT"] += value
+        elif location == "Tasmania":
+            statemap["TAS"] += value
+        elif location == "Western Australia":
+            statemap["WA"] += value
+        else:
+            statemap[location] += value
 
     statekeys = list(statemap.keys())
     statevalues = list(statemap.values())
@@ -187,7 +224,7 @@ def Getsentiment():
 def Getunemploy():
     variables = {}
     variables = load_variables()
-    response = couchdb_requests.couch_get_unemployVSsentiment(variables,
+    response = couchdb_requests.couch_get_view(variables,
                                                               "aurin-employment-gcc/", "_design/states_unemploy/",
                                                               "_view/unemploy_rate",
                                                               "?reduce=true&group_level=3")
@@ -231,7 +268,7 @@ def Getunemploy():
 def GetsentimentD():
     variables = {}
     variables = load_variables()
-    response = couchdb_requests.couch_get_unemployVSsentiment(variables,
+    response = couchdb_requests.couch_get_view(variables,
                                                               "twitter/", "_design/regionVSsentiment/",
                                                               "_view/senti_date",
                                                               "?reduce=true&group_level=2")
@@ -315,13 +352,36 @@ def GetsentimentD():
 
     return 'img/sentiment2018.png', statemap
 
+# plot the chart: the relation of sentiment VS unemployment
+def CombinePlot():
+    Getsentiment()
+    y = []
+    unemploy = Getunemploy()[1]
+    senti = GetsentimentD()[1]
+    x = list(unemploy.values())
+    keys = list(unemploy.keys())
+
+    # bulid a dataset for unemployment with sentiment
+    for key in keys:
+        y.append(senti[key])
+
+     # start plot
+    fig, ax = plt.subplots()
+    ax.scatter(x, y, c='b', marker='o')
+    plt.grid()
+    ax.set_ylabel('Sentiment Rate', fontsize=12)
+    ax.set_xlabel('Unemployment Rate', fontsize=12)
+    ax.set_title('Relation Between Sentiment and Unemployment', fontsize=16)
+    plt.grid(True)
+    fig.savefig('img/comparing.png')
+    return 'img/comparing.png'
 
 def GetMedAgePopulation():
     variables = {}
     variables = load_variables()
-    response = couchdb_requests.couch_get_agePopulation(variables, "aurin-population/",
+    response = couchdb_requests.couch_get_view(variables, "aurin-population/",
                                                         "_design/population/",
-                                                        "_view/population")
+                                                        "_view/population/", "")
     statemap = defaultdict(int)
     freq = defaultdict(int)
     # going through the twitter data from couchdb
@@ -393,9 +453,11 @@ def GetMedAgePopulation():
 
 
 def GetElderlyPopPercentage():
-    response = couchdb_requests.couch_get_agePopulation(variables,"aurin-population",
+    variables = {}
+    variables = load_variables()
+    response = couchdb_requests.couch_get_view(variables,"aurin-population",
                                                         "_design/population/",
-                                                        "_view/population")
+                                                        "_view/population/","")
     statemap = defaultdict(int)
     freq = defaultdict(int)
     # going through the twitter data from couchdb
@@ -486,7 +548,7 @@ def checkAllSentimentZero(statemap):
 def GetUsefulKeywords():
     variables = {}
     variables = load_variables()
-    response = couchdb_requests.couch_get_localGig(variables, "twitter/",
+    response = couchdb_requests.couch_get_view(variables, "twitter/",
                                                    "_design/GigSentimental/",
                                                    "_view/sentimentOnStateKeywordYear",
                                                    "?reduce=true&group_level=3")
@@ -511,7 +573,7 @@ def GetUsefulKeywords():
 def GetKeywordSentiment(keyword):
     variables = {}
     variables = load_variables()
-    response = couchdb_requests.couch_get_localGig(variables, "twitter/",
+    response = couchdb_requests.couch_get_view(variables, "twitter/",
                                                    "_design/GigSentimental/",
                                                    "_view/sentimentOnStateKeywordYear",
                                                    "?reduce=true&group_level=3")
