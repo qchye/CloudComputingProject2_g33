@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sentiment Analysis</title>
+        <link rel="stylesheet" href="/content/styles.css" type="text/css"/>
+    </head>
+    <body>  
+        
+        <h1>Tweets Sentiment Related to the Unemployment Rate <strong>?</strong></h1>
+        
+        <br>
+        <ul>
+            <h2><li>Unemployment Rate in 2018</li></h2>
+
+            <p>
+                At 2018, the unemployment rate in 'Western Australia', 'South Australia', 'Victoria', 'Qeensland' 
+                and 'New South Wales' 5 states is showing below. Althouth, there are 7 states in Australia, 
+                the data set found on AURIN only contains the unemployment rates of this 5 states.
+            </p>
+
+            <div>
+            <image class="display" src="/img/unemployment_rate.png" height="350" width="500"/>
+                <p>
+                    From the bar chart, we notice that in 2018 'Western Australia' had the most unemployment rate, while 
+                    'New South Wales' had the lowest unemployment rate.
+                </p>
+            </div>
+
+            <br>
+                <h2><li>Sentiment of GIG Economy</li></h2>
+                <p>
+                    After analyzing all the tweet texts, we collect sentiment scores for each text, 
+                    then aggregate the sentiment score by states. The sentiment score for each state is showing in the bar chart below: 
+                    the range of the score is (-1,1), where '-1' means have strong negative emotions, '1' means have strong positive emotions.
+. 
+                </p>   
+
+            <div>
+                <image class="display1" src="/img/sentiment.png" height="350" width="500" />
+                    
+                <p>
+                    The chart shows that 'Tasmania', 'South Australia' and 'Western Australia' have more positive emotions towards GIG economy 
+                    than the other 4 state. The people in "Victoria" has an almost neutral attitude towards GIG economy. 
+                    Overall, in Australia, <strong>people are optimistic about the GIG economy</strong>.
+                </p>
+            </div>
+
+            <br>
+            <h3><li>Sentiment of GIG Economy in 2018</li></h3>
+            <p>
+                By selecting all the sentiment scores in 2018 and then grouping them by state, we get the following graph.
+            </p>
+            
+            <div>
+                <image class="display2" src="/img/sentiment2018.png" height="350" width="500"/>
+                
+                <p>
+                    The chart shows that Tasmania has the most positive attitude towards the GIG economy,
+                    Other states are almost neutral on the GIG economy.
+                </p>
+
+            </div>
+
+            <br>
+            <h2><li>Is There a Relationship Between Emotions and Unemployment?</li></h2>
+
+            <div>
+
+                <image class="display3" src="/img/comparing.png" height="350" width="500"/>
+                <p>
+                    The graph shows that there is no clear relationship between sentiment in the gig economy and unemployment rate. B
+                    But we can notice that the people, who are in a state that has an unemployment rate  lower than 4.5%, 
+                    is more optimistic about the gig economy than the people in the other state with unemployment rates over 5.5%.
+                </p>
+
+            </div>
+
+            <br>
+            </br>
+            <br>
+            </br>
+        </ul>
+    </body>
+    <link rel="stylesheet" href="/content/styles.css" type="text/css"/>
+</html>

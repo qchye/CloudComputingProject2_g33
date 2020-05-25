@@ -45,10 +45,10 @@ def logging_hook(response, *args, **kwargs):
     data = dump.dump_all(response)
     print(data.decode('utf-8'))
 
-def couch_get_localGig(couch_vars, designURL, viewURL, query):
+def couch_get_unemployVSsentiment(couch_vars, designURL, viewURL, query):
     try:
         s = requests.Session()
-        response = requests_retry_session(session=s, couch_vars=couch_vars).get(couch_vars['COUCHDB_BASE_URL'] + "twitter/" + designURL + viewURL + query)
+        response = requests_retry_session(session=s, couch_vars=couch_vars).get(couch_vars['COUCHDB_BASE_URL'] + designURL + viewURL + query)
         response.raise_for_status()
 
     except requests.exceptions.HTTPError as e:
