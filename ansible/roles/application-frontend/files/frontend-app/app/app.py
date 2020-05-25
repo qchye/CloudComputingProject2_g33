@@ -20,7 +20,7 @@ def scenario():
     if request.method == 'POST':
         id = request.form['id']
         if id == "yun":
-            return render_template('about.html')
+            return render_template('sentiment.html')
         if id == "rohan":
             return render_template('about.html')
         if id == "alvin":
