@@ -2,6 +2,8 @@ import controller
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, send_from_directory
 
 app = Flask(__name__, static_url_path='')
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
 
 # Index
 @app.route('/')
@@ -20,7 +22,8 @@ def scenario():
     if request.method == 'POST' or request.method == 'GET':
         id = request.form['id']
         if id == "yun":
-            return render_template('about.html')
+            filepath = controller.CombinePlot()
+            return render_template('sentiment.html')
         if id == "Income vs Gig Economy Tweets":
             filepath = controller.get_income_tweet()
             return render_template('income_tweet.html', path=filepath)
@@ -34,8 +37,28 @@ def scenario():
             filepath = controller.get_unemployment_tweet()
             return render_template('unemp_tweet.html', unemp_year_state=filepath[0], unemp_year=filepath[1], tweet_year_state=filepath[2])
         if id == "alvin":
-            return render_template('about.html')
+            median_age_path = controller.GetMedAgePopulation()
+            elderly_pop_path = controller.GetElderlyPopPercentage()
+            keywords_with_data = controller.GetUsefulKeywords()
+            generated = False
+            return render_template('state_sentiment_pop.html', median_age_path=median_age_path, elderly_pop_path=elderly_pop_path, keywords_with_data=keywords_with_data, generated=generated)
 
+# Sentiment vs Elderly Population
+@app.route('/sentiment_pop', methods=['GET', 'POST'])
+def sentimentPop():
+    if request.method == 'POST':
+        median_age_path = controller.GetMedAgePopulation()
+        elderly_pop_path = controller.GetElderlyPopPercentage()
+        keywords_with_data = controller.GetUsefulKeywords()
+        selected = request.form['keyword']
+        generated = True
+
+        (keyword_sentiment_path, isHypothesisTrue, isTasNegative, isSANegative,
+         lowestSentState, lowestSentValue) = controller.GetKeywordSentiment(selected)
+
+        return render_template('state_sentiment_pop.html', median_age_path=median_age_path, elderly_pop_path=elderly_pop_path,
+         keyword_sentiment_path=keyword_sentiment_path, keywords_with_data=keywords_with_data, isHypothesisTrue=isHypothesisTrue, 
+         isTasNegative=isTasNegative, isSANegative=isSANegative, lowestSentState=lowestSentState, lowestSentValue=lowestSentValue, generated=generated)
 
 #Getting css file
 @app.route('/content/<path:path>')
