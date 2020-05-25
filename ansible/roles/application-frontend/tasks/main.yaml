@@ -81,7 +81,7 @@
     --mode replicated 
     --replicas 1 
     --name frontend
-    --publish mode=host,target=5000,published=80  
+    --publish mode=host,target=5000,published=5000  
     --constraint node.labels.type==frontend
     --env FILE_TO_RUN='app.py'
     {{ service_env_vars }}
