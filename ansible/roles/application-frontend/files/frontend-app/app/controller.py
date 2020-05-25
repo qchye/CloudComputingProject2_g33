@@ -1,6 +1,8 @@
 import couchdb_requests
 import os
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
@@ -177,17 +179,19 @@ def get_income_tweet():
         city_count_dict[row["key"][0]] = row["value"] 
 
     city_count_dict = state_sorter_twitter(city_count_dict)
-    
+    # city_count_dict.pop('OT')
+
+
 # create graph
     incomes = list(city_income_dict.values())
     tweet_num = list(city_count_dict.values())
     states = list(city_count_dict.keys())
-    fig, ax = plt.subplots(figsize=(10,10))
+    fig, ax = plt.subplots()
     ax.scatter(incomes, tweet_num)
     ax.set_xlabel('Mean Income ($)')
     ax.set_ylabel('Number of Tweets')
     for i in range(len(incomes)):
-        ax.annotate(states[i], (incomes[i], tweet_num[i]))
+        ax.annotate(' ' + states[i], (incomes[i], tweet_num[i]), )
     
     fig.savefig('img/incomevstweets.png')
     return "img/incomevstweets.png"
@@ -231,14 +235,14 @@ def get_unemployment_tweet():
 
     #create graph one unemployment vs year per state
     x_axis = ['2010','2011','2012','2013','2014','2015','2016','2017']
-    plt_1 = plt.figure(1)
+    plt_1 = plt.figure(1,figsize=(8,8))
     for state in unemployment_count.keys():
         plt.plot(x_axis, unemployment_count[state], label = state)
     
-    plt.xlabel('year')
-    plt.ylabel('no. of people unemployed')
-    plt.title('Unemployment vs year per state')
-    plt.legend(loc=7)
+    plt.xlabel('year', fontsize=16)
+    plt.ylabel('no. of people unemployed', fontsize=16)
+    plt.title('Unemployment vs Year (State)', fontsize=20)
+    plt_1.legend()
     plt_1.savefig('img/unemp_vs_year_state.png')
     
     #create graph two unemployment vs year overall
@@ -247,11 +251,11 @@ def get_unemployment_tweet():
         for i in range(len(value)):
             total[i] += value[i]
 
-    plt_2 = plt.figure(2, figsize=(10,10))
+    plt_2 = plt.figure(2, figsize=(8,8))
     plt.plot(x_axis, total)
-    plt.xlabel('year')
-    plt.ylabel('no. of people unemployed')
-    plt.title('Unemployment vs year')
+    plt.xlabel('year', fontsize=16)
+    plt.ylabel('no. of people unemployed', fontsize=16)
+    plt.title('Unemployment vs Year', fontsize=20)
     plt_2.savefig('img/unemp_vs_year.png')
     x_axis_4 = list(year_count.keys())
     y_axis_4 = []
@@ -259,14 +263,15 @@ def get_unemployment_tweet():
     for year in x_axis:
         y_axis_4.append(year_count[year])
     
-    plt_3 = plt.figure(3)
+    plt_3 = plt.figure(3, figsize=(8,8))
     plt.plot(x_axis, y_axis_4)
-    plt.xlabel('year')
-    plt.ylabel('no. of gig economy tweets')
-    plt.title('Gig Economy Tweets vs year')
+    plt.xlabel('year', fontsize=16)
+    plt.ylabel('no. of gig economy tweets', fontsize=16)
+    plt.title('Gig Economy Tweets vs year', fontsize=20)
     plt_3.savefig('img/tweets_vs_year_state.png')
 
     images = ['img/unemp_vs_year_state.png', 'img/unemp_vs_year.png', 'img/tweets_vs_year_state.png']
+    return images
 get_unemployment_tweet()
 
 
@@ -308,8 +313,11 @@ def get_business_pop_location():
     keyword_loc_dict = {}
     for key in states:
         keyword_loc_dict[key] = {}
-    for row in response["rows"]: 
-        keyword_loc_dict[row["key"][0]].update({row["key"][1]:row["value"]})
+    for row in response["rows"]:
+        if (row["key"][0] == 'OT'):
+            pass
+        else:
+            keyword_loc_dict[row["key"][0]].update({row["key"][1]:row["value"]})
     images = []
     #create graph
     for state in states:

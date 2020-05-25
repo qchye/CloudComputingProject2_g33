@@ -17,30 +17,25 @@ def about():
 # Scenario
 @app.route('/scenario', methods=['GET', 'POST'])
 def scenario():
-    if request.method == 'POST':
+    if request.method == 'POST' or request.method == 'GET':
         id = request.form['id']
         if id == "yun":
             return render_template('about.html')
-        if id == "rohan":
+        if id == "Income vs Gig Economy Tweets":
             filepath = controller.get_income_tweet()
             return render_template('income_tweet.html', path=filepath)
+        if id == "Gig Economy Business Popularity":
+            filepath = controller.get_business_pop_location()
+            fp2 = controller.get_business_popularity()
+            return render_template('tweet_pop.html', vic_fp=filepath[0], nsw_fp=filepath[1],
+            wa_fp=filepath[2], sa_fp=filepath[3], nt_fp=filepath[4], act_fp=filepath[5],
+            qld_fp=filepath[6], tas_fp=filepath[7], overall=fp2)
+        if id == "Unemployment vs Gig Economy Tweets":
+            filepath = controller.get_unemployment_tweet()
+            return render_template('unemp_tweet.html', unemp_year_state=filepath[0], unemp_year=filepath[1], tweet_year_state=filepath[2])
         if id == "alvin":
             return render_template('about.html')
 
-def income_tweets():
-    filepath = controller.get_income_tweet()
-    return render_template('income_tweet.html', path=filepath)
-
-def business_popularity():
-    filepath = controller.get_business_pop_location()
-    fp2 = controller.get_business_popularity()
-    return render_template('tweet_pop.html', vic_fp=filepath[0], nsw_fp=filepath[1],
-    wa_fp=filepath[2], sa_fp=filepath[3], nt_fp=filepath[4], act_fp=filepath[5],
-    qld_fp=filepath[6], tas_fp=filepath[7], overall=fp2)
-
-def unemployment_tweets():
-    filepath = controller.get_unemployment_tweet()
-    return render_template('unemp_tweet.html', path=filepath)
 
 #Getting css file
 @app.route('/content/<path:path>')

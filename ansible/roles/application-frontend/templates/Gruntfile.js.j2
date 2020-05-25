@@ -4,8 +4,8 @@ module.exports = function (grunt) {
       "couch-compile": {
         dbs: {
           files: {
-            "/tmp/twitter.json": "couchdb/twitter/*"
-            "/tmp/aurin
+            "/tmp/twitter.json": "couchdb/twitter/*",
+            "/tmp/aurin-employment-sa2.json": "couchdb/aurin-employment-sa2/*"
           }
         }
       },
@@ -17,6 +17,11 @@ module.exports = function (grunt) {
         twitter: {
           files:{
             "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/{{ couch_db_twitter_database_name }}" : "/tmp/twitter.json"
+          }
+        },
+        aurin-employment-sa2: {
+          files: {
+            "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/aurin-employment-sa2" : "/tmp/aurin-employment-sa2.json"
           }
         }
 
