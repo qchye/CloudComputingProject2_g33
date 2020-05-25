@@ -1,77 +1,115 @@
-{% extends 'layout.html' %}
-
-{% block body %}
+{% extends 'layout.html' %} {% block body %}
 
 <div class="jumbotron text-center top-space">
-    <h1>Welcome To Gig Economy World In Australia</h1>
-    <p class="lead">presented by Forever_33</p>
+  <h1>Welcome To Gig Economy World In Australia</h1>
+  <p class="lead">presented by Forever_33</p>
 </div>
 
 <div>
-    <div class="row form-group border-top">
-        <div class="col-lg-12">
-            <h1>Hello There!</h1>
-            <div class="pt-3">
-                <p>Have you ever heard of 'gig economy'? If you never heard of it, <strong>you are at the right place!</strong></p>
-                <p>A gig economy is a <strong>free market system</strong> in which temporary positions are common and organizations hire independent workers for short-term commitments.</p>
-                <p>Some examples of gig economy jobs including: <strong>Uber, Hungry panda, Free lancer... and even more! </strong></p>
-                <p>Here is the time for us to help <strong>you</strong> to explore the wonderful land of gig economy in Australia!</p>
-                <p>First, allow us to show you the result that shows the <strong>count of tweets related to Gig Economy in states of Australia!</strong></p>
-            </div>
-        </div>
+  <div class="row form-group border-top">
+    <div class="col-lg-12">
+      <h1>Hello There!</h1>
+      <div class="pt-3">
+        <p>
+          Have you ever heard of 'gig economy'? If you never heard of it,
+          <strong>you are at the right place!</strong>
+        </p>
+        <p>
+          A gig economy is a <strong>free market system</strong> in which
+          temporary positions are common and organizations hire independent
+          workers for short-term commitments.
+        </p>
+        <p>
+          Some examples of gig economy jobs including:
+          <strong>Uber, Hungry panda, Free lancer... and even more! </strong>
+        </p>
+        <p>
+          Here is the time for us to help <strong>you</strong> to explore the
+          wonderful land of gig economy in Australia!
+        </p>
+        <p>
+          First, allow us to show you the result that shows the
+          <strong
+            >count of tweets related to Gig Economy in states of
+            Australia!</strong
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {% if session.logged_in == NULL %}
+  <div class="row form-group border-top">
+    <br /><br />
+    <div class="col-lg-7 border">
+      <img src="{{ path }}" />
+    </div>
+    <div class="col-lg-5">
+      <h2>AMAZING HUH?</h2>
+      <p>
+        As we see that in the state of Australia, there are most of the people
+        who tweet of gig economy!
+      </p>
+      <p>
+        Interesting enough, although New South Wales has 2.3M populations more
+        than Victoria, Victoria still has the
+        <strong
+          >higher number of tweets related to gig economy compared to New South
+          Wales!</strong
+        >!
+      </p>
+      <p>
+        We can make an assumption that maybe
+        <strong
+          >gig economy activity in Victoria has been conducted more frequently
+          than other states.</strong
+        >
+      </p>
+      <br />
+      <p>
+        Furthurmore, as we look into details, it is not hard to find that
+        <strong
+          >only a few of people actually tweet of gig economy in Northern
+          Territory.</strong
+        >
+      </p>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+    </div>
+  </div>
+
+  {% endif %}
+  <div class="row form-group">
+    <div class="col-lg-12 border-top">
+      <h2>Now is your time to find out the truth about Gig Economy!</h2>
+      <br />
     </div>
 
-    {% if session.logged_in == NULL %}
-    <div class="row form-group border-top">
-        <br /><br />
-        <div class="col-lg-7 border">
-            <img src="{{ path }}" />
-        </div>
-        <div class="col-lg-5">
-            <h2>AMAZING HUH? </h2>
-            <p>As we see that in the state of Australia, there are most of the people who tweet of gig economy! </p>
-            <p>Interesting enough, although New South Wales has 2.3M populations more than Victoria, Victoria still has the <strong>higher number of tweets related to gig economy compared to New South Wales!</strong>!</p>
-            <p>We can make an assumption that maybe <strong>gig economy activity in Victoria has been conducted more frequently than other states.</strong></p>
-            <br />
-            <p>Furthurmore, as we look into details, it is not hard to find that <strong>only a few of people actually tweet of gig economy in Northern Territory.</strong></p>
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-        </div>
+    <div class="col-lg-12" style="font-size: 18px;">
+      <label>Select a topic you are interested in: </label>
     </div>
-       
-    {% endif %}
-    <div class="row form-group">
-        <div class="col-lg-12 border-top">
-
-            <h2>Now is your time to find out the truth about Gig Economy!</h2>
-            <br />
-        </div>
-
-        <div class="col-lg-12" style="font-size: 18px;">
-            <label>Select a topic you are interested in: </label>
-        </div>
-        <form action="/scenario" method="post">
-            <div class="col-lg-10">
-
-                <select class="form-control" name="id">
-                    <option value="Gig Economy Business Popularity">Gig Economy Business Popularity</option>
-                    <option value="Income vs Gig Economy Tweets">Income vs Gig Economy Tweets</option>
-                    <option value="Unemployment vs Gig Economy Tweets">Unemployment vs Gig Economy Tweets</option>
-                </select>
-
-            </div>
-            <div class="col-lg-2">
-                <button class="btn btn-primary" type="submit">Submit</button>
-            </div>
-            <div class="col-lg-12 bottom-space">
-            </div>
-        </form>
-
-    </div>
-       
+    <form action="/scenario" method="post">
+      <div class="col-lg-10">
+        <select class="form-control" name="id">
+          <option value="yun">Yun's scenario</option>
+          <option value="Gig Economy Business Popularity">Gig Economy Business Popularity</option>
+          <option value="Income vs Gig Economy Tweets">Income vs Gig Economy Tweets</option>
+          <option value="Unemployment vs Gig Economy Tweets">Unemployment vs Gig Economy Tweets</option>
+          <option value="alvin">
+            Is Negative Sentiment towards Gig Economy Companies correlated to
+            the Elderly Population in States of Australia
+          </option>
+        </select>
+      </div>
+      <div class="col-lg-2">
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </div>
+      <div class="col-lg-12 bottom-space"></div>
+    </form>
+  </div>
 </div>
 
 {% endblock %}
