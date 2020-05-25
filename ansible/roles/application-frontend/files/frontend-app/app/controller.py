@@ -272,4 +272,3 @@ def CombinePlot():
     fig.savefig('img/comparing.png')        
     return 'img/comparing.png'
     
-CombinePlot()
