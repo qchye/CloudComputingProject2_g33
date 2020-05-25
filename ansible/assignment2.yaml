@@ -1,3 +1,9 @@
+# Project           : Gig Economy and its impact in Australia
+# Team              : Group 33
+# City              : Melbourne, Australia
+# Authors           : Qing Feng Chye 770376, Sii Kim Lau 890511, Rohan Jahagirdar 835450
+#                     Yun Liu 1046589, Shorye Chopra 689913
+# Purpose           : Playbook Entry point for identifying ansible roles to be executed 
 - hosts: localhost
   vars_files:
     - host_vars/nectar.yaml
@@ -5,9 +11,17 @@
 
   roles:
     # - role: openstack-common
+    #   tags:
+    #     - infrastructure
     - role: openstack-volume
+      tags:
+        - infrastructure
     - role: openstack-security-group
+      tags:
+        - infrastructure
     - role: openstack-instance
+      tags:
+        - infrastructure
 
 - hosts: SWARM
   vars_files:
@@ -17,8 +31,14 @@
 
   roles:
     - role: swarm-common
+      tags:
+        - swarm
     - role: swarm-volumes
+      tags:
+        - swarm
     - role: swarm-setup
+      tags:
+        - swarm
 
 # Below is helper role for populating the inventory file based on 
 # the instances created above

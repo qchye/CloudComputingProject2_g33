@@ -1,3 +1,11 @@
+"""
+# Project           : Gig Economy and its impact in Australia
+# Team              : Group 33
+# City              : Melbourne, Australia
+# Authors           : Qing Feng Chye 770376, Sii Kim Lau 890511, Rohan Jahagirdar 835450
+#                     Yun Liu 1046589, Shorye Chopra 689913
+# Purpose           : Twitter Harvester for live data
+"""
 import tweepy
 import json
 import couchdb_requests
