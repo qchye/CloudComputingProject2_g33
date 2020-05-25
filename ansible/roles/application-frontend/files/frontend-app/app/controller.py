@@ -142,14 +142,15 @@ def GetLocalGig():
                       "_view/local-gig-view",
                      "?reduce=true&group_level=2")
 
-
     fig, ax = plt.subplots()
     ax.bar(statekeys, statevalues)
     ax.set_ylabel('Count')
-    ax.set_title('Num of Gig economy was tweeted in states in Australia')
+    ax.set_title(
+        'Num of Gig economy was tweeted in states of Australia from 2010 to 2020')
     ax.set_xticklabels(statekeys)
-    for a,b in zip(statekeys, statevalues):
-        plt.text(a, b, str(b))
+    for a, b in zip(statekeys, statevalues):
+        plt.text(a, b + 130, str(b), horizontalalignment='center',
+                 verticalalignment='center')
     fig.savefig('img/stateGig.png')
     return "img/stateGig.png"
 #GetLocalGig()
@@ -455,13 +456,14 @@ def GetMedAgePopulation():
 def GetElderlyPopPercentage():
     variables = {}
     variables = load_variables()
-    response = couchdb_requests.couch_get_view(variables,"aurin-population",
+    response = couchdb_requests.couch_get_view(variables,"aurin-population/",
                                                         "_design/population/",
                                                         "_view/population/","")
     statemap = defaultdict(int)
     freq = defaultdict(int)
     # going through the twitter data from couchdb
     # do data processing
+    print(response)
     for i in response["rows"]:
         location = i["key"]
         value = i["value"]["elderly_pop_pr100"]
@@ -762,14 +764,14 @@ def get_unemployment_tweet():
 
     #create graph one unemployment vs year per state
     x_axis = ['2010','2011','2012','2013','2014','2015','2016','2017']
-    plt_1 = plt.figure(1,figsize=(8,8))
+    plt_1 = plt.figure(1,figsize=(10,10))
     for state in unemployment_count.keys():
         plt.plot(x_axis, unemployment_count[state], label = state)
     
-    plt.xlabel('year', fontsize=16)
-    plt.ylabel('no. of people unemployed', fontsize=16)
+    plt.xlabel('year', fontsize=14)
+    plt.ylabel('no. of people unemployed', fontsize=14)
     plt.title('Unemployment vs Year (State)', fontsize=20)
-    plt_1.legend()
+    plt_1.legend(loc=7)
     plt_1.savefig('img/unemp_vs_year_state.png')
     
     #create graph two unemployment vs year overall
@@ -780,8 +782,8 @@ def get_unemployment_tweet():
 
     plt_2 = plt.figure(2, figsize=(8,8))
     plt.plot(x_axis, total)
-    plt.xlabel('year', fontsize=16)
-    plt.ylabel('no. of people unemployed', fontsize=16)
+    plt.xlabel('year', fontsize=14)
+    plt.ylabel('no. of people unemployed', fontsize=14)
     plt.title('Unemployment vs Year', fontsize=20)
     plt_2.savefig('img/unemp_vs_year.png')
     x_axis_4 = list(year_count.keys())
@@ -791,7 +793,7 @@ def get_unemployment_tweet():
         y_axis_4.append(year_count[year])
     
     plt_3 = plt.figure(3, figsize=(8,8))
-    plt.plot(x_axis, y_axis_4)
+    plt.plot(x_axis, y_axis_4, color="red")
     plt.xlabel('year', fontsize=16)
     plt.ylabel('no. of gig economy tweets', fontsize=16)
     plt.title('Gig Economy Tweets vs year', fontsize=20)
@@ -817,7 +819,7 @@ def get_business_popularity():
     plt.rcdefaults()
     fig, ax = plt.subplots(figsize=(10,10))
     y_arrange = np.arange(len(y_pos))
-    ax.barh(y_arrange, x_pos, align='center')
+    ax.barh(y_arrange, x_pos, align='center', color="red")
     ax.set_yticks(y_arrange)
     ax.set_yticklabels(y_pos)
     ax.invert_yaxis()  # labels read top-to-bottom
