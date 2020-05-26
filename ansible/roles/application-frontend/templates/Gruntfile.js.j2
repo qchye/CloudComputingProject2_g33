@@ -5,7 +5,8 @@ module.exports = function (grunt) {
         dbs: {
           files: {
             "/tmp/twitter.json": "couchdb/twitter/*",
-            "/tmp/aurin-employment-sa2.json": "couchdb/aurin-employment-sa2/*"
+            "/tmp/aurin-employment-sa2.json": "couchdb/aurin-employment-sa2/*",
+            "/tmp/aurin-mean-income.json": "couchdb/aurin-mean-income/*"
           }
         }
       },
@@ -19,12 +20,16 @@ module.exports = function (grunt) {
             "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/{{ couch_db_twitter_database_name }}" : "/tmp/twitter.json"
           }
         },
-        aurin-employment-sa2: {
+        "aurin-employment-sa2": {
           files: {
             "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/aurin-employment-sa2" : "/tmp/aurin-employment-sa2.json"
           }
+        },
+        "aurin-mean-income": {
+          files: {
+            "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/aurin-mean-income" : "/tmp/aurin-mean-income.json.json"
+          }
         }
-
       }
     });
   console.log(JSON.stringify(grunt.config.get()));

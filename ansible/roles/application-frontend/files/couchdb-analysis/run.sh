@@ -1,4 +1,3 @@
 #!/bin/bash
-
-grunt couch-compile
-grunt couch-push
+exec grunt couch-compile
+exec grunt couch-push
