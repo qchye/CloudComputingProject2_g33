@@ -1,0 +1,32 @@
+module.exports = function (grunt) {
+  grunt
+    .initConfig({
+      "couch-compile": {
+        dbs: {
+          files: {
+            "/tmp/twitter.json": "couchdb/twitter/*",
+            "/tmp/aurin-employment-sa2.json": "couchdb/aurin-employment-sa2/*"
+          }
+        }
+      },
+      "couch-push": {
+        options: {
+          user: "{{ user }}",
+          pass: "{{ pass }}"
+        },
+        twitter: {
+          files:{
+            "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/{{ couch_db_twitter_database_name }}" : "/tmp/twitter.json"
+          }
+        },
+        aurin-employment-sa2: {
+          files: {
+            "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/aurin-employment-sa2" : "/tmp/aurin-employment-sa2.json"
+          }
+        }
+
+      }
+    });
+  console.log(JSON.stringify(grunt.config.get()));
+  grunt.loadNpmTasks("grunt-couch");
+};

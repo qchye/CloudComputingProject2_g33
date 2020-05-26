@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="jumbotron text-center top-space">
+    <h1>Gig Economy Related tweets vs Mean Income</h1>
+    <p class="lead">presented by Forever_33</p>
+</div>
+
+<div>
+    <div class="row form-group border-top">
+        <div class="col-lg-12">
+            <h1>How the mean income in states relates to the popularity and hence, demand for gig economy services</h1>
+            <div class="pt-3">
+            </div>
+        </div>
+    </div>
+
+    {% if session.logged_in == NULL %}
+    <div class="row form-group border-top">
+        <div class="col-lg-5 border">
+            <figure>
+                <img src="{{ path }}" alt="Image" height="500" width="500" />
+                <figcaption>Fig.1: Mean Income per state plotted against number of tweets per state</figcaption>
+            </figure>
+        </div>
+        <br></br>
+        <div class="col-sm-1"></div>
+        <div class="col-lg-5 border">
+            <h4> 
+                A comparison of the mean income of a state against the number of tweets from that state relating to the
+                gig economy. Upon initial viewing, it is obvious that Victorians have the highest volume of tweets relating
+                to the gig economy in addition to possessing the second highest average income. NSW on the other hand has a
+                relatively low average income but produces the second highest number of tweets. Both these states far exceed 
+                their counterparts in the number of tweets. This is most likely due to the higher population in these states, 
+                which leads to an increase in demand for businesses that rely on the gig economy. If the effect of population 
+                density is ignored, we can observe that there seems to be a general trend that the states with the higher incomes
+                generally tweet more about the gig economy. Victoria and NSW has a comparable population and we notice that Victoria
+                tweets more. WA and Queensland too have similar populations and yet again the pattern repeats, we see a greater 
+                numberof tweets in Queensland when it has a higher mean income. The reason this pattern exists is perhaps because it 
+                is likely that higher income people will be more willing to pay someone else to do a task, hence contributing to 
+                the gig economy.
+            </h4>
+        </div>   
+    </div>
+    
+    {% endif %}
+   
+</div>
+
+{% endblock %}
