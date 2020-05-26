@@ -23,7 +23,7 @@ def manualHarvesttxt():
         #print(CheckFriendsTwitter(tweets, all_keywords, all_regions))
         single_result = CheckFriendsTwitter(tweets, all_keywords, all_regions)
         if single_result != False:
-            couchdb_requests.couch_post(variables, single_result, "twitter")
+            couchdb_requests.couch_post(variables, single_result)
     return
 
 
@@ -44,7 +44,7 @@ def manualHarvestMel():
             pass
         
         if single_result != False:
-            couchdb_requests.couch_post(variables, single_result, "twitter")
+            couchdb_requests.couch_post(variables, single_result)
     return
 ##
 # Function to add the income data to CouchDB
@@ -90,7 +90,7 @@ def manualHarvestPop(inputfile):
                     doc[key] = row['properties'][key]
 
             print(doc)
-            couchdb_requests.couch_post(variables, doc, "aurin-population")
+            couchdb_requests.couch_post_other(variables, doc, "aurin-population")
 
 ##
 # Function to upload aurin data into couchdb for analysis
@@ -111,7 +111,7 @@ def manualHarvestMisc(inputfile, dbname):
                 doc[key] = row['properties'][key]
 
             print(doc)
-            couchdb_requests.couch_post(variables, doc, dbname))
+            couchdb_requests.couch_post_other(variables, doc, dbname)
 
 
 manualHarvesttxt()
