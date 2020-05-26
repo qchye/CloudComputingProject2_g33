@@ -53,11 +53,11 @@ def logging_hook(response, *args, **kwargs):
     data = dump.dump_all(response)
     print(data.decode('utf-8'))
 
-def couch_post(couch_vars ,tweet):
+def couch_post(couch_vars ,tweet, db):
     print(tweet)
     try:
         s = requests.Session()
-        response = requests_retry_session(session=s, couch_vars=couch_vars).post(couch_vars['COUCHDB_BASE_URL'] + "twitter", json = tweet)
+        response = requests_retry_session(session=s, couch_vars=couch_vars).post(couch_vars['COUCHDB_BASE_URL'] + db, json = tweet)
         response.raise_for_status()
 
     except requests.exceptions.HTTPError as e:
