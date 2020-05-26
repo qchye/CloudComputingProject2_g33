@@ -21,7 +21,7 @@ What things you need to install the software
 The ansible playbook assumes the following:
 
 ```text
-- The infrastricture resources will be created on the Melbourne Univeristy Research cloud using the openstack sdk
+- The infrastructure resources will be created on the Melbourne Univeristy Research cloud using the openstack sdk
 - The playbook initiator has access to the nectar cloud and has downloaded the necessary files (API key and openrc.sh file)
 ```
 
