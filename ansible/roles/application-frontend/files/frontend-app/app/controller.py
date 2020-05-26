@@ -734,7 +734,7 @@ def get_unemployment_tweet():
     variables = load_variables()
     response = couchdb_requests.couch_get_view(variables, "aurin-employment-sa2/",
                     "_design/unemployment_doc/",
-                    "_view/sa2_vs_decdata/", "?reduce=true&group_level=1")
+                    "_view/sa2_decdata/", "?reduce=true&group_level=1")
 
     unemployment_count = {}
     for row in response["rows"]:
