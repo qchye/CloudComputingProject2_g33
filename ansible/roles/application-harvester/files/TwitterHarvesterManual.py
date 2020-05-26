@@ -37,7 +37,7 @@ def manualHarvesttxt():
         except:
             pass
         #print(CheckFriendsTwitter(tweets, all_keywords, all_regions))
-        single_result = CheckFriendsTwitter(variables[tweets, all_keywords, all_regions)
+        single_result = CheckFriendsTwitter(tweets, all_keywords, all_regions)
         if single_result != False:
             couchdb_requests.couch_post(variables, single_result)
     return
