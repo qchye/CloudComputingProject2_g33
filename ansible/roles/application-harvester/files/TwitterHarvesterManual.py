@@ -6,7 +6,7 @@
 #                     Yun Liu 1046589, Shorye Chopra 689913
 # Purpose           : Manual Twitter Harvester for Uploading data manally to couchdb
 """
-# from TwitterHarvesterFunc import all_keywords,all_regions,CheckFriendsTwitter
+from TwitterHarvesterFunc import all_keywords,all_regions,CheckFriendsTwitter
 import json
 import couchdb_requests
 
