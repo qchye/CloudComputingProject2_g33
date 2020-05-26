@@ -829,7 +829,7 @@ def get_business_popularity():
     fig.savefig('img/keyword_pop.png')
     return "img/keyword_pop.png"
 
-get_business_popularity()
+
 
 def get_business_pop_location():
     #keyword count per location
