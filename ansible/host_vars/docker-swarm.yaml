@@ -1,4 +1,5 @@
 ---
+## Mount Paths for each of the volumes
 volumes:
   - device: /dev/vdb
     mountpoint: /var/lib/docker

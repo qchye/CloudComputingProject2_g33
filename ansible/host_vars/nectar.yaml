@@ -1,7 +1,10 @@
 # Common vars
 availability_zone: melbourne-qh2-uom
 
-# Volume
+##
+# Openstack Volume
+# Iterate over volume variable create each volume
+#
 volumes:
   - vol_name: instance1-docker-vol
     vol_size: 5
@@ -18,7 +21,12 @@ volumes:
   - vol_name: instance4-docker-vol
     vol_size: 7
 
+##
 # Security group
+# Iterate over security groups variable and create a new
+# security group as well as associate the list of sg_rules
+# to each security group
+##
 security_groups:
   - name: assignment2_ssh
     description: "Security group for SSH access"
@@ -76,7 +84,12 @@ security_groups:
         port_range_max: 4789
         remote_group: docker_swarm
 
+##
 # Instance
+# Iterate over instances variable and provision instances on cloud
+# Additionally link the respective volument and instance flavor 
+# to each instance 
+##
 instances:
   - name: swarm-01
     volumes: ['instance1-docker-vol', 'instance1-couch-db-vol']
@@ -94,6 +107,12 @@ instances:
 instance_image: 45225edb-66d8-4fd0-bf41-132a31a18166
 instance_key_name: assignment_2
 instance_network: qh2-uom-internal
+
+##
+# Inventory Populater
+# Define various aspects that determine how Ansible's in-memory
+# inventory file will be populated 
+##
 
 swarm_managers_count: 3
 backend_nodes_count: 3

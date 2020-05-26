@@ -1,15 +1,15 @@
+# Project           : Gig Economy and its impact in Australia
+# Team              : Group 33
+# City              : Melbourne, Australia
+# Authors           : Qing Feng Chye 770376, Sii Kim Lau 890511, Rohan Jahagirdar 835450
+#                     Yun Liu 1046589, Shorye Chopra 689913
+# Purpose           : Helper Tasks for populating Ansible in-memory inventory file
 ---
 - name: Get Instance Information from Openstack Cloud
   os_server_info:
     server: '{{ item.name }}'
   loop: '{{ instances }}'
   register: os_instance_inventory
-
-# - debug:
-#     msg: "{{ item.openstack_servers.0.public_v4 }}"
-#   loop: '{{ os_server.results }}'
-#   loop_control:
-#     index_var: my_idx
 
 - name: Manager Node List    
   set_fact:
@@ -50,7 +50,6 @@
       - docker_engine
       - docker_swarm_worker
   loop: '{{ worker_nodes }}'
-#   when: "item.openstack is defined"
 
 - name: Add host Backend
   add_host:
@@ -58,7 +57,6 @@
     groups: 
       - backend_nodes
   loop: '{{ backend_nodes }}'
-#   when: "item.openstack is defined"
 
 - name: Add host Frontend
   add_host:
@@ -66,7 +64,6 @@
     groups: 
       - frontend_nodes
   loop: '{{ frontend_nodes }}'
-#   when: "item.openstack is defined" 
 
 - name: inventory file
   debug:
