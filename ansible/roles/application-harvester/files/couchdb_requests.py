@@ -79,4 +79,29 @@ def couch_post(couch_vars ,tweet):
         return True
     
 
+def couch_post_other(couch_vars ,doc, db):
+    print(doc)
+    try:
+        s = requests.Session()
+        response = requests_retry_session(session=s, couch_vars=couch_vars).post(couch_vars['COUCHDB_BASE_URL'] + db, json = doc)
+        response.raise_for_status()
+
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 400:
+           print("Bad Request was Sent")
+           return False
+        elif e.response.status_code == 409:
+            print("Document exists in DB")
+            return False
+        else:
+           print(e.__class__.__name__)
+           return False
+    except Exception as e: 
+        print('Failure Caused by ', e.__class__.__name__)
+        return False
+    else:
+        print(response.json())
+        print('It eventually worked', response.status_code)
+        return True
+
     

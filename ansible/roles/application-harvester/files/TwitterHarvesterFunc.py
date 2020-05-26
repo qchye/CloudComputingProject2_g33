@@ -227,26 +227,3 @@ def isRetweet(text):
         return True
 
     return False
-
-
-# # All required information to obtain useful tweets
-# all_keywords = ['airbnb', 'stayz', 'zomato', 'deliveroo', 'hungrypanda',
-#                 'lyft', 'olacab', '#grab', 'grabcar', 'didirider', 'menulog',
-#                 'doordash', 'etsy', 'gumtree', 'fiverr', 'cookitoo', 'uber',
-#                 'taxify', 'airtasker', '#freelancer', 'parkhound', 'campspace',
-#                 'upwork', 'designcrowd', 'ratesetter', 'urbansitter', 'airly',
-#                 'gocatch', 'shebah', 'bellhops', 'channel40', 'freightmatch',
-#                 'wrappli', 'zoom2u', 'carnextdoor', 'camplify', 'kindershare',
-#                 'quipmo', 'thevolte', 'bettercaring', '#blys', 'classbento',
-#                 'helpling']
-
-# fst_half_keywords = ['airbnb', 'zomato', 'airtasker', 'menulog', 'lyft',
-#                      'etsy', 'stayz', 'taxify', 'grabcar',  '#freelancer', 'designcrowd', 'upwork',  'ratesetter', 'campspace', 'camplify', 'shebah', 'bellhops', 'channel40', 'freightmatch', 'wrappli', 'zoom2u', 'carnextdoor']
-
-# snd_half_keywords = ['uber', 'deliveroo',  'fiverr',  'doordash', 'gumtree',
-#                      'hungrypanda', 'olacab', 'didirider',  'cookitoo',  '#grab', 'parkhound', 'airly', 'urbansitter', 'gocatch',  'kindershare', 'quipmo', 'thevolte', 'bettercaring', '#blys', 'classbento', 'helpling']
-
-# all_regions = ['Melbourne', 'Sydney', 'Queensland', 'Perth', 'New South Wales', 'Brisbane', 'Tasmania',
-#               'Canberra', 'Darwin', 'Adelaide', 'Hobart', 'Western Australia', 'South Australia', 'Victoria']
-
-# MAX_COUNT = 10000
