@@ -1,9 +1,8 @@
+from collections import defaultdict
+import matplotlib.pyplot as plt
 import couchdb_requests
 import os
 import pandas as pd
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
 import json
@@ -644,7 +643,7 @@ def GetKeywordSentiment(keyword):
             statemap[state] = round(value, 2)
     # store the state with the lowest sentiment value and the sentiment value
     (lowestSentState, lowestSentValue) = min((key, value)
-                                             for key, value in statemap.items() if value is not 0)
+                                             for key, value in statemap.items() if value != 0)
     isHypothesisTrue = False
     # assume negative sentiment initially
     isTasNegative = True
@@ -864,4 +863,3 @@ def get_business_pop_location():
         fig.savefig('img/keyword_loc_'+state+'.png')
         images.append('img/keyword_loc_'+state+'.png')
     return images
-get_business_pop_location()

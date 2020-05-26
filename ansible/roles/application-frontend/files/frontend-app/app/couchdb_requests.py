@@ -68,4 +68,3 @@ def couch_get_view(couch_vars, db, designURL, viewURL, query):
         # print(response.json())
         print('It eventually worked', response.status_code)
         return response.json()
-

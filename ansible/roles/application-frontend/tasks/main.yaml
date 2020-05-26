@@ -11,9 +11,6 @@
   copy:
     src: "couchdb-analysis"
     dest: "{{ frontend_path }}"
-    owner: root
-    group: root
-    mode: 0755
   when: " 'frontend_nodes' in group_names"
 
 - name: Copy Gruntfile file
