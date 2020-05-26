@@ -4,11 +4,27 @@
 # City              : Melbourne, Australia
 # Authors           : Qing Feng Chye 770376, Sii Kim Lau 890511, Rohan Jahagirdar 835450
 #                     Yun Liu 1046589, Shorye Chopra 689913
-# Purpose           : Manual Twitter Harvester for Uploading data manally to couchdb
+# Purpose           : Manual Twitter Harvester for Uploading data manually to couchdb
 """
-from TwitterHarvesterFunc import all_keywords,all_regions,CheckFriendsTwitter
+from TwitterHarvesterFunc import CheckFriendsTwitter
 import json
 import couchdb_requests
+
+
+# All required information to obtain useful tweets
+all_keywords = ['airbnb', 'stayz', 'zomato', 'deliveroo', 'hungrypanda',
+                'lyft', 'olacab', '#grab', 'grabcar', 'didirider', 'menulog',
+                'doordash', 'etsy', 'gumtree', 'fiverr', 'cookitoo', 'uber',
+                'taxify', 'airtasker', '#freelancer', 'parkhound', 'campspace',
+                'upwork', 'designcrowd', 'ratesetter', 'urbansitter', 'airly',
+                'gocatch', 'shebah', 'bellhops', 'channel40', 'freightmatch',
+                'wrappli', 'zoom2u', 'carnextdoor', 'camplify', 'kindershare',
+                'quipmo', 'thevolte', 'bettercaring', '#blys', 'classbento',
+                'helpling']
+
+all_regions = ['Melbourne', 'Sydney', 'Queensland', 'Perth', 'New South Wales', 'Brisbane', 'Tasmania',
+              'Canberra', 'Darwin', 'Adelaide', 'Hobart', 'Western Australia', 'South Australia', 'Victoria']
+
 
 def manualHarvesttxt():
     inputfile='./tweetsGigRes.txt'
@@ -21,7 +37,7 @@ def manualHarvesttxt():
         except:
             pass
         #print(CheckFriendsTwitter(tweets, all_keywords, all_regions))
-        single_result = CheckFriendsTwitter(tweets, all_keywords, all_regions)
+        single_result = CheckFriendsTwitter(variables[tweets, all_keywords, all_regions)
         if single_result != False:
             couchdb_requests.couch_post(variables, single_result)
     return

@@ -563,7 +563,7 @@ def GetUsefulKeywords():
                                                    "?reduce=true&group_level=3")
     usefulKeywords = []
     keywordsList = ['airbnb', 'airly', 'airtasker', 'bettercaring', 'camplify', 'carnextdoor', 'classbento', 'deliveroo', 'designcrowd', 'doordash', 'ebay', 'etsy', 'fiverr', 'gocatch', 'gumtree', 'helpling', 'homeaway',
-                    'hometime', 'lyft', 'menulog', 'olacab', 'parkhound', 'pawshake', 'ratesetter', 'redbubble', 'shebah', 'sidekicker', 'spacer', 'stayz', 'stellar', 'taxify', 'uber', 'upwork', 'urbansitter', 'zomato', 'zoom2u']
+                    'lyft', 'menulog', 'olacab', 'parkhound', 'pawshake', 'ratesetter', 'redbubble', 'shebah', 'sidekicker', 'spacer', 'stayz', 'stellar', 'uber', 'upwork', 'urbansitter', 'zomato', 'zoom2u']
     locList = ['Melbourne', 'Adelaide', 'Brisbane', 'Canberra', 'Darwin', 'Hobart', 'Perth', 'Sydney', 'Victoria',
                'South Australia', 'Queensland', 'New South Wales', 'Northern Territory', 'Tasmania', 'Western Australia']
     for i in response["rows"]:
