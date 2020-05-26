@@ -1,26 +1,17 @@
 [SWARM]
-172.26.133.111
-172.26.133.56
-172.26.134.30
-172.26.131.70
 
 [docker_engine]
 
 [docker_swarm_manager]
-172.26.133.111
 
 [docker_swarm_worker]
 
 [backend_nodes]
-172.26.133.111
-172.26.133.56
-172.26.134.30
 
 [frontend_nodes]
-172.26.131.70
 
 [SWARM:vars]
 ansible_user=ubuntu
-ansible_ssh_private_key_file=/root/.ssh/assignment_2
+ansible_ssh_private_key_file=~/.ssh/uni/assignment_2
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 ansible_python_interpreter=/usr/bin/python3
