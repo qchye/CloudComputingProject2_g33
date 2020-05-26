@@ -643,7 +643,7 @@ def GetKeywordSentiment(keyword):
             statemap[state] = round(value, 2)
     # store the state with the lowest sentiment value and the sentiment value
     (lowestSentState, lowestSentValue) = min((key, value)
-                                             for key, value in statemap.items() if value is not 0)
+                                             for key, value in statemap.items() if value != 0)
     isHypothesisTrue = False
     # assume negative sentiment initially
     isTasNegative = True

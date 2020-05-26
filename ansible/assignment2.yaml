@@ -1,24 +1,24 @@
-# - hosts: localhost
-#   vars_files:
-#     - host_vars/nectar.yaml
-#   gather_facts: true
+- hosts: localhost
+  vars_files:
+    - host_vars/nectar.yaml
+  gather_facts: true
 
-#   roles:
-#     # - role: openstack-common
-#     - role: openstack-volume
-#     - role: openstack-security-group
-#     - role: openstack-instance
+  roles:
+    # - role: openstack-common
+    - role: openstack-volume
+    - role: openstack-security-group
+    - role: openstack-instance
 
-# - hosts: SWARM
-#   vars_files:
-#     - host_vars/docker-swarm.yaml
-#   gather_facts: true
-#   become: yes
+- hosts: SWARM
+  vars_files:
+    - host_vars/docker-swarm.yaml
+  gather_facts: true
+  become: yes
 
-#   roles:
-#     - role: swarm-common
-#     - role: swarm-volumes
-#     - role: swarm-setup
+  roles:
+    - role: swarm-common
+    - role: swarm-volumes
+    - role: swarm-setup
 
 # Below is helper role for populating the inventory file based on 
 # the instances created above
