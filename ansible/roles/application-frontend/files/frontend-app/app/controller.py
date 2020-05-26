@@ -17,15 +17,12 @@ import json
 
 
 ''' Helper functions for the data gathering '''
-
-
 def load_variables():
     variables = {}
     with open('variables.json') as json_file:
         variables = json.load(json_file)
-
+    
     return variables
-
 
 def state_sorter_twitter(states_dict):
     statemap = defaultdict(int)
@@ -67,7 +64,7 @@ def state_sorter_twitter(states_dict):
     return statemap
 
 
-# helper function to sort data into states for aurin gccsa
+#helper function to sort data into states for aurin gccsa
 def state_sorter_aurin(states_dict):
     new_state_dict = defaultdict(int)
     for key in states_dict.keys():
@@ -80,7 +77,7 @@ def state_sorter_aurin(states_dict):
 
         elif key == 'Greater Brisbane':
             new_state_dict['QLD'] += states_dict[key]
-
+        
         elif key == 'Greater Darwin':
             new_state_dict['NT'] += states_dict[key]
 
@@ -107,7 +104,7 @@ def state_sorter_aurin(states_dict):
 
         elif key == 'Rest of SA':
             new_state_dict['SA'] += states_dict[key]
-
+        
         elif key == 'Rest of Tas.':
             new_state_dict['TAS'] += states_dict[key]
 
@@ -119,12 +116,14 @@ def state_sorter_aurin(states_dict):
 
         else:
             pass
-
+    
     for key in new_state_dict.keys():
         if key != 'ACT':
             new_state_dict[key] = new_state_dict[key]/2
-
+        
     return new_state_dict
+
+
 
 
 '''Controller functions for processing of couchdb data'''
@@ -134,9 +133,9 @@ def GetLocalGig():
     variables = {}
     variables = load_variables()
     response = couchdb_requests.couch_get_view(variables, "twitter/",
-                                               "_design/LocalGig/",
-                                               "_view/local-gig-view",
-                                               "?reduce=true&group_level=1")
+                      "_design/LocalGig/",
+                      "_view/local-gig-view",
+                      "?reduce=true&group_level=1")
     statemap = {}
     for row in response["rows"]:
         statemap[row["key"][0]] = row["value"]
@@ -146,9 +145,9 @@ def GetLocalGig():
     statekeys = list(statemap.keys())
     statevalues = list(statemap.values())
     response = couchdb_requests.couch_get_view(variables, "twitter/",
-                                               "_design/LocalGig/",
-                                               "_view/local-gig-view",
-                                               "?reduce=true&group_level=2")
+                      "_design/LocalGig/",
+                      "_view/local-gig-view",
+                     "?reduce=true&group_level=2")
 
     fig, ax = plt.subplots()
     ax.bar(statekeys, statevalues)
@@ -161,7 +160,7 @@ def GetLocalGig():
                  verticalalignment='center')
     fig.savefig('img/stateGig.png')
     return "img/stateGig.png"
-# GetLocalGig()
+#GetLocalGig()
 
 
 # plot the chart:The sentiment variable in all years
@@ -169,9 +168,9 @@ def Getsentiment():
     variables = {}
     variables = load_variables()
     response = couchdb_requests.couch_get_view(variables,
-                                               "twitter/", "_design/regionVSsentiment/",
-                                               "_view/senti",
-                                               "?reduce=true&group_level=1")
+                                                              "twitter/", "_design/regionVSsentiment/",
+                                                              "_view/senti",
+                                                              "?reduce=true&group_level=1")
     statemap = defaultdict(int)
     for i in response["rows"]:
         location = i["key"][0]
@@ -234,9 +233,9 @@ def Getunemploy():
     variables = {}
     variables = load_variables()
     response = couchdb_requests.couch_get_view(variables,
-                                               "aurin-employment-gcc/", "_design/states_unemploy/",
-                                               "_view/unemploy_rate",
-                                               "?reduce=true&group_level=3")
+                                                              "aurin-employment-gcc/", "_design/states_unemploy/",
+                                                              "_view/unemploy_rate",
+                                                              "?reduce=true&group_level=3")
 
     unemployrate = defaultdict(float)
     for i in response["rows"]:
@@ -278,9 +277,9 @@ def GetsentimentD():
     variables = {}
     variables = load_variables()
     response = couchdb_requests.couch_get_view(variables,
-                                               "twitter/", "_design/regionVSsentiment/",
-                                               "_view/senti_date",
-                                               "?reduce=true&group_level=2")
+                                                              "twitter/", "_design/regionVSsentiment/",
+                                                              "_view/senti_date",
+                                                              "?reduce=true&group_level=2")
     count = defaultdict(int)
     statemap = defaultdict(int)
     for i in response["rows"]:
@@ -362,8 +361,6 @@ def GetsentimentD():
     return 'img/sentiment2018.png', statemap
 
 # plot the chart: the relation of sentiment VS unemployment
-
-
 def CombinePlot():
     Getsentiment()
     y = []
@@ -387,13 +384,12 @@ def CombinePlot():
     fig.savefig('img/comparing.png')
     return 'img/comparing.png'
 
-
 def GetMedAgePopulation():
     variables = {}
     variables = load_variables()
     response = couchdb_requests.couch_get_view(variables, "aurin-population/",
-                                               "_design/population/",
-                                               "_view/population/", "")
+                                                        "_design/population/",
+                                                        "_view/population/", "")
     statemap = defaultdict(int)
     freq = defaultdict(int)
     # going through the twitter data from couchdb
@@ -467,9 +463,9 @@ def GetMedAgePopulation():
 def GetElderlyPopPercentage():
     variables = {}
     variables = load_variables()
-    response = couchdb_requests.couch_get_view(variables, "aurin-population/",
-                                               "_design/population/",
-                                               "_view/population/", "")
+    response = couchdb_requests.couch_get_view(variables,"aurin-population/",
+                                                        "_design/population/",
+                                                        "_view/population/","")
     statemap = defaultdict(int)
     freq = defaultdict(int)
     # going through the twitter data from couchdb
@@ -562,9 +558,9 @@ def GetUsefulKeywords():
     variables = {}
     variables = load_variables()
     response = couchdb_requests.couch_get_view(variables, "twitter/",
-                                               "_design/GigSentimental/",
-                                               "_view/sentimentOnStateKeywordYear",
-                                               "?reduce=true&group_level=3")
+                                                   "_design/GigSentimental/",
+                                                   "_view/sentimentOnStateKeywordYear",
+                                                   "?reduce=true&group_level=3")
     usefulKeywords = []
     keywordsList = ['airbnb', 'airly', 'airtasker', 'bettercaring', 'camplify', 'carnextdoor', 'classbento', 'deliveroo', 'designcrowd', 'doordash', 'ebay', 'etsy', 'fiverr', 'gocatch', 'gumtree', 'helpling', 'homeaway',
                     'lyft', 'menulog', 'olacab', 'parkhound', 'pawshake', 'ratesetter', 'redbubble', 'shebah', 'sidekicker', 'spacer', 'stayz', 'stellar', 'uber', 'upwork', 'urbansitter', 'zomato', 'zoom2u']
@@ -587,9 +583,9 @@ def GetKeywordSentiment(keyword):
     variables = {}
     variables = load_variables()
     response = couchdb_requests.couch_get_view(variables, "twitter/",
-                                               "_design/GigSentimental/",
-                                               "_view/sentimentOnStateKeywordYear",
-                                               "?reduce=true&group_level=3")
+                                                   "_design/GigSentimental/",
+                                                   "_view/sentimentOnStateKeywordYear",
+                                                   "?reduce=true&group_level=3")
     statemap = initialiseStateMap()
     freq = defaultdict(int)
     for i in response["rows"]:
@@ -698,34 +694,33 @@ def GetKeywordSentiment(keyword):
 #
 # @returns: Image file path and saves graph image to /img folder
 '''
-
-
 def get_income_tweet():
     variables = {}
     variables = load_variables()
 
     # Get the Aurin Income Data
     response = couchdb_requests.couch_get_view(variables, "aurin-mean-income/",
-                                               "_design/city-income/",
-                                               "_view/gccsavsincome-view/", "")
+                      "_design/city-income/",
+                      "_view/gccsavsincome-view/", "")
 
-    # Parse the response
+    #Parse the response
     city_income_dict = {}
-
+    
     for row in response["rows"]:
         city_income_dict[row["key"]] = row["value"]
-
-    # Get the twitter data for that location
+    
+    #Get the twitter data for that location
     city_income_dict = state_sorter_aurin(city_income_dict)
     response = couchdb_requests.couch_get_view(variables, "twitter/",
-                                               "_design/location-keyword/",
-                                               "_view/locationvskeyword/", "?reduce=true&group_level=1")
-    # Parse the response
+                    "_design/location-keyword/",
+                    "_view/locationvskeyword/", "?reduce=true&group_level=1")    
+    #Parse the response
     city_count_dict = {}
     for row in response["rows"]:
-        city_count_dict[row["key"][0]] = row["value"]
+        city_count_dict[row["key"][0]] = row["value"] 
 
     city_count_dict = state_sorter_twitter(city_count_dict)
+
 
     # create graph
     incomes = list(city_income_dict.values())
@@ -737,97 +732,93 @@ def get_income_tweet():
     ax.set_ylabel('Number of Tweets')
     for i in range(len(incomes)):
         ax.annotate(' ' + states[i], (incomes[i], tweet_num[i]), )
-
-    # save and return image
+    
+    #save and return image
     fig.savefig('img/incomevstweets.png')
     return "img/incomevstweets.png"
 
-
 get_income_tweet()
+
 
 
 def get_unemployment_tweet():
     variables = {}
     variables = load_variables()
-    # get unemployment data from view
+    #get unemployment data from view
     response = couchdb_requests.couch_get_view(variables, "aurin-employment-sa2/",
-                                               "_design/unemployment_doc/",
-                                               "_view/sa2_decdata/", "?reduce=true&group_level=1")
-    # parse the response
+                    "_design/unemployment_doc/",
+                    "_view/sa2_decdata/", "?reduce=true&group_level=1")
+    #parse the response
     unemployment_count = {}
     for row in response["rows"]:
         unemployment_count[row["key"]] = row["value"]
 
-    unemployment_count['QLD'] = [4348, 4386,
-                                 4950, 4528, 5129, 5872, 5941, 5664]
+    unemployment_count['QLD'] =  [4348, 4386, 4950, 4528, 5129, 5872, 5941, 5664]
     total = []
+   
 
-    # get tweets based on year
+    #get tweets based on year
     response = couchdb_requests.couch_get_view(variables, "twitter/",
-                                               "_design/location-keyword/",
-                                               "_view/year_keyword/", "?reduce=true&group_level=1")
-
-    # parse response for graphing
+                    "_design/location-keyword/",
+                    "_view/year_keyword/", "?reduce=true&group_level=1")
+    
+    #parse response for graphing
     year_count = {}
     for row in response["rows"]:
         year_count[row["key"][0]] = row["value"]
 
-    # get tweets based on location
+    #get tweets based on location
     response = couchdb_requests.couch_get_view(variables, "twitter/",
-                                               "_design/location-keyword/",
-                                               "_view/year_location/", "?reduce=true&group_level=2")
+                    "_design/location-keyword/",
+                    "_view/year_location/", "?reduce=true&group_level=2")
     year_location_count = {}
     for key in unemployment_count.keys():
         year_location_count[key] = {}
-    for row in response["rows"]:
-        year_location_count[row["key"][1]].update(
-            {row["key"][0]: row["value"]})
+    for row in response["rows"]: 
+        year_location_count[row["key"][1]].update({row["key"][0]:row["value"]})
 
-    # create graph one: unemployment vs year per state
-    x_axis = ['2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017']
-    plt_1 = plt.figure(1, figsize=(10, 10))
+    #create graph one: unemployment vs year per state
+    x_axis = ['2010','2011','2012','2013','2014','2015','2016','2017']
+    plt_1 = plt.figure(1,figsize=(10,10))
     for state in unemployment_count.keys():
-        plt.plot(x_axis, unemployment_count[state], label=state)
-
+        plt.plot(x_axis, unemployment_count[state], label = state)
+    
     plt.xlabel('year', fontsize=14)
     plt.ylabel('no. of people unemployed', fontsize=14)
     plt.title('Unemployment vs Year (State)', fontsize=20)
     plt_1.legend(loc=7)
     plt_1.savefig('img/unemp_vs_year_state.png')
-
-    # create graph two: unemployment vs year overall
+    
+    #create graph two: unemployment vs year overall
     total = np.zeros(len(unemployment_count['VIC']))
     for value in unemployment_count.values():
         for i in range(len(value)):
             total[i] += value[i]
 
-    plt_2 = plt.figure(2, figsize=(8, 8))
+    plt_2 = plt.figure(2, figsize=(8,8))
     plt.plot(x_axis, total)
     plt.xlabel('year', fontsize=14)
     plt.ylabel('no. of people unemployed', fontsize=14)
     plt.title('Unemployment vs Year', fontsize=20)
     plt_2.savefig('img/unemp_vs_year.png')
 
-    # create graph two: unemployment vs year overall
+    #create graph two: unemployment vs year overall
     x_axis_4 = list(year_count.keys())
     y_axis_4 = []
-
+    
     for year in x_axis:
         y_axis_4.append(year_count[year])
-
-    plt_3 = plt.figure(3, figsize=(8, 8))
+    
+    plt_3 = plt.figure(3, figsize=(8,8))
     plt.plot(x_axis, y_axis_4, color="red")
     plt.xlabel('year', fontsize=16)
     plt.ylabel('no. of gig economy tweets', fontsize=16)
     plt.title('Gig Economy Tweets vs year', fontsize=20)
     plt_3.savefig('img/tweets_vs_year_state.png')
 
-    # save and return images
-    images = ['img/unemp_vs_year_state.png',
-              'img/unemp_vs_year.png', 'img/tweets_vs_year_state.png']
+    #save and return images
+    images = ['img/unemp_vs_year_state.png', 'img/unemp_vs_year.png', 'img/tweets_vs_year_state.png']
     return images
-
-
 get_unemployment_tweet()
 
 '''
@@ -835,26 +826,26 @@ get_unemployment_tweet()
 # @returns: Image file path and saves graph image to /img folder
 '''
 
-
 def get_business_popularity():
-
+    
     variables = {}
     variables = load_variables()
     # Extract popular keyword view
     response = couchdb_requests.couch_get_view(variables, "twitter/",
-                                               "_design/keyword_count/",
-                                               "_view/keyword_popular/", "?reduce=true&group_level=1")
+                    "_design/keyword_count/",
+                    "_view/keyword_popular/", "?reduce=true&group_level=1")
+    
 
-    # store response in dictionary
+    #store response in dictionary
     keyword_count_dict = {}
     for row in response["rows"]:
         keyword_count_dict[row["key"]] = row["value"]
     y_pos = list(keyword_count_dict.keys())
     x_pos = list(keyword_count_dict.values())
 
-    # plot the graph
+    #plot the graph
     plt.rcdefaults()
-    fig, ax = plt.subplots(figsize=(10, 10))
+    fig, ax = plt.subplots(figsize=(10,10))
     y_arrange = np.arange(len(y_pos))
     ax.barh(y_arrange, x_pos, align='center', color="red")
     ax.set_yticks(y_arrange)
@@ -863,29 +854,26 @@ def get_business_popularity():
     ax.set_xlabel('Number of Tweets')
     ax.set_title('Popularity of Gig Economy Businesses')
 
-    # save and return image path
+    #save and return image path
     fig.savefig('img/keyword_pop.png')
     return "img/keyword_pop.png"
-
 
 '''
 # Function to get views from Twitter database about the tweet counts of various keywords
 # @returns: Image file path array for each state and saves graph images to /img folder
 '''
-
-
 def get_business_pop_location():
-
+    
     variables = {}
     variables = load_variables()
 
     # Extract popular keyword view
     response = couchdb_requests.couch_get_view(variables, "twitter/",
-                                               "_design/location-keyword/",
-                                               "_view/locationvskeyword/", "?reduce=true&group_level=2")
+                    "_design/location-keyword/",
+                    "_view/locationvskeyword/", "?reduce=true&group_level=2")
 
     # Parse the response and store popularity according to each state
-    states = ['VIC', 'NSW', 'WA', 'SA', 'NT', 'ACT', 'QLD', 'TAS']
+    states = ['VIC', 'NSW', 'WA', 'SA', 'NT', 'ACT', 'QLD', 'TAS']                
     keyword_loc_dict = {}
     for key in states:
         keyword_loc_dict[key] = {}
@@ -893,16 +881,15 @@ def get_business_pop_location():
         if (row["key"][0] == 'OT'):
             pass
         else:
-            keyword_loc_dict[row["key"][0]].update(
-                {row["key"][1]: row["value"]})
+            keyword_loc_dict[row["key"][0]].update({row["key"][1]:row["value"]})
 
     images = []
-    # create graph for each state
+    #create graph for each state
     for state in states:
         y_pos = list(keyword_loc_dict[state].keys())
         x_pos = list(keyword_loc_dict[state].values())
         plt.rcdefaults()
-        fig, ax = plt.subplots(figsize=(10, 10))
+        fig, ax = plt.subplots(figsize=(10,10))
         y_arrange = np.arange(len(y_pos))
         ax.barh(y_arrange, x_pos, align='center')
         ax.set_yticks(y_arrange)
@@ -910,7 +897,7 @@ def get_business_pop_location():
         ax.invert_yaxis()  # labels read top-to-bottom
         ax.set_xlabel('Number of Tweets')
         ax.set_title('Popularity of Gig Economy Businesses in ' + state)
-        # save figure for state
+        #save figure for state
         fig.savefig('img/keyword_loc_'+state+'.png')
         images.append('img/keyword_loc_'+state+'.png')
     return images
