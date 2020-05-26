@@ -1,63 +1,69 @@
 .mx-0 {
-  margin-left: 0px;
-  margin-right: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 
 p {
-  font-size: 18px !important;
+    font-size: 18px !important;
 }
 
 .pt-1 {
-  padding-top: 10px;
+    padding-top: 10px;
 }
+
 .pt-2 {
-  padding-top: 20px;
+    padding-top: 20px;
 }
+
 .pt-3 {
-  padding-top: 30px;
+    padding-top: 30px;
 }
 
 .sticky {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 100000000;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100000000;
 }
 
 .border {
-  border: solid;
-  border-color: lightgray;
+    border: solid;
+    border-color: lightgray;
 }
 
 .border-top {
-  border-top: solid;
-  border-color: gray;
+    border-top: solid;
+    border-color: gray;
 }
 
 .border-right {
-  border-right: solid;
-  border-color: gray;
+    border-right: solid;
+    border-color: gray;
 }
 
 .bottom-space {
-  padding-bottom: 150px;
+    padding-bottom: 150px;
 }
 
 .top-space {
-  margin-top: 55px;
+    margin-top: 55px;
 }
 
 .group-img-size {
-  width: 80em;
-  height: 100%;
+    width: 80em;
+    height: 100%;
 }
 
 .md-fontsize {
-  font-size: 30px;
+    font-size: 30px;
 }
 
 .sentiment-title-border {
-  text-align: center;
-  border: 5px outset #07a4a0;
-  border-radius: 25px;
+    text-align: center;
+    border: 5px outset #07a4a0;
+    border-radius: 25px;
+}
+
+.section-height{
+    height: 505px;
 }

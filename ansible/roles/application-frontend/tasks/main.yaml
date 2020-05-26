@@ -42,39 +42,40 @@
     image: couchdb-analysis-documents:latest
   when: " 'frontend_nodes' in group_names"
 
-- name: Copy files over for building frontend application
-  copy:
-    src: "frontend-app"
-    dest: "{{ frontend_path }}"
-    owner: root
-    group: root
-    mode: 0755
-  when: " 'frontend_nodes' in group_names"
+# - name: Copy files over for building frontend application
+#   copy:
+#     src: "frontend-app"
+#     dest: "{{ frontend_path }}"
+#     owner: root
+#     group: root
+#     mode: 0755
+#   when: " 'frontend_nodes' in group_names"
 
-- name: Copy variables file
-  template:
-    src: "variables.json.j2"
-    dest: "{{ frontend_path }}/frontend-app/app/variables.json"
-    mode: '0755'
-  when: " 'frontend_nodes' in group_names"
+# - name: Copy variables file
+#   template:
+#     src: "variables.json.j2"
+#     dest: "{{ frontend_path }}/frontend-app/app/variables.json"
+#     mode: '0755'
+#   when: " 'frontend_nodes' in group_names"
 
-- name: Build image and with build args
-  docker_image:
-    name: frontend:latest
-    build:
-      path: "{{ frontend_path }}/frontend-app/"
-      pull: yes
-      use_config_proxy: yes
-    force: yes
-    source: build
-  when: " 'frontend_nodes' in group_names"
+# - name: Build image and with build args
+#   docker_image:
+#     name: frontend:latest
+#     build:
+#       path: "{{ frontend_path }}/frontend-app/"
+#       pull: yes
+#       use_config_proxy: yes
+#     force: yes
+#     source: build
+#   when: " 'frontend_nodes' in group_names"
 
-- name: Remove existing service
-  command:
-    cmd: docker service rm frontend
-  when: "inventory_hostname == groups['docker_swarm_manager'][0]"
-  ignore_errors: yes
+# - name: Remove existing service
+#   command:
+#     cmd: docker service rm frontend
+#   when: "inventory_hostname == groups['docker_swarm_manager'][0]"
+#   ignore_errors: yes
   
+<<<<<<< HEAD
 - name: Create Docker services for Frontend
   become: yes
   command: "docker service create 
@@ -87,3 +88,17 @@
     {{ service_env_vars }}
     frontend:latest"
   when: "inventory_hostname == groups['docker_swarm_manager'][0]"
+=======
+# - name: Create Docker services for Frontend
+#   become: yes
+#   command: "docker service create 
+#     --mode replicated 
+#     --replicas 1 
+#     --name frontend
+#     --publish mode=host,target=5000,published=5000  
+#     --constraint node.labels.type==frontend
+#     --env FILE_TO_RUN='app.py'
+#     {{ service_env_vars }}
+#     frontend:latest"
+#   when: "inventory_hostname == groups['docker_swarm_manager'][0]"
+>>>>>>> master

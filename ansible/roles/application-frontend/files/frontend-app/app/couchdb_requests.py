@@ -6,7 +6,6 @@ from requests.packages.urllib3.util.retry import Retry
 from requests.auth import HTTPBasicAuth
 from requests_toolbelt.utils import dump
 
-
 def requests_retry_session(
     retries=3,
     backoff_factor=1,
@@ -16,7 +15,7 @@ def requests_retry_session(
     couch_vars={}
 ):
     """
-
+    
     Function to ensure that there's fault tolerance when making API Calls to Couch 
     retries -> Total number of retries
     backoff_factor -> How long the processes will sleep between failed requests
@@ -42,132 +41,30 @@ def requests_retry_session(
     session.auth = (couch_vars['USERNAME'], couch_vars['PASSWORD'])
     return session
 
-
 def logging_hook(response, *args, **kwargs):
     data = dump.dump_all(response)
     print(data.decode('utf-8'))
 
-
-def couch_get_localGig(couch_vars, designURL, viewURL, query):
+def couch_get_view(couch_vars, db, designURL, viewURL, query):
     try:
         s = requests.Session()
-        response = requests_retry_session(session=s, couch_vars=couch_vars).get(
-            couch_vars['COUCHDB_BASE_URL'] + "twitter/" + designURL + viewURL + query)
+        response = requests_retry_session(session=s, couch_vars=couch_vars).get(couch_vars['COUCHDB_BASE_URL'] + db + designURL + viewURL + query)
         response.raise_for_status()
 
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 400:
-            print("Bad Request was Sent")
-            return False
+           print("Bad Request was Sent")
+           return False
         elif e.response.status_code == 409:
             print("Document exists in DB")
             return False
         else:
-            print(e.__class__.__name__)
-            return False
-    except Exception as e:
+           print(e.__class__.__name__)
+           return False
+    except Exception as e: 
         print('Failure Caused by ', e.__class__.__name__)
         return False
     else:
-        print('It eventually worked', response.status_code)
-        return response.json()
-
-
-def couch_get_agePopulation(couch_vars, designURL, viewURL):
-    try:
-        s = requests.Session()
-        response = requests_retry_session(session=s, couch_vars=couch_vars).get(
-            couch_vars['COUCHDB_BASE_URL'] + "aurin-population/" + designURL + viewURL)
-        response.raise_for_status()
-
-    except requests.exceptions.HTTPError as e:
-        if e.response.status_code == 400:
-            print("Bad Request was Sent")
-            return False
-        elif e.response.status_code == 409:
-            print("Document exists in DB")
-            return False
-        else:
-            print(e.__class__.__name__)
-            return False
-    except Exception as e:
-        print('Failure Caused by ', e.__class__.__name__)
-        return False
-    else:
-        print('It eventually worked', response.status_code)
-        return response.json()
-
-
-def couch_get_unemployVSsentiment(couch_vars, designURL, viewURL, query):
-    try:
-        s = requests.Session()
-        response = requests_retry_session(session=s, couch_vars=couch_vars).get(
-            couch_vars['COUCHDB_BASE_URL'] + designURL + viewURL + query)
-        response.raise_for_status()
-
-    except requests.exceptions.HTTPError as e:
-        if e.response.status_code == 400:
-            print("Bad Request was Sent")
-            return False
-        elif e.response.status_code == 409:
-            print("Document exists in DB")
-            return False
-        else:
-            print(e.__class__.__name__)
-            return False
-    except Exception as e:
-        print('Failure Caused by ', e.__class__.__name__)
-        return False
-    else:
-        print('It eventually worked', response.status_code)
-        return response.json()
-
-
-def couch_get_agePopulation(couch_vars, designURL, viewURL):
-    try:
-        s = requests.Session()
-        response = requests_retry_session(session=s, couch_vars=couch_vars).get(
-            couch_vars['COUCHDB_BASE_URL'] + "aurin-population/" + designURL + viewURL)
-        response.raise_for_status()
-
-    except requests.exceptions.HTTPError as e:
-        if e.response.status_code == 400:
-            print("Bad Request was Sent")
-            return False
-        elif e.response.status_code == 409:
-            print("Document exists in DB")
-            return False
-        else:
-            print(e.__class__.__name__)
-            return False
-    except Exception as e:
-        print('Failure Caused by ', e.__class__.__name__)
-        return False
-    else:
-        print('It eventually worked', response.status_code)
-        return response.json()
-
-
-def couch_get_unemployVSsentiment(couch_vars, designURL, viewURL, query):
-    try:
-        s = requests.Session()
-        response = requests_retry_session(session=s, couch_vars=couch_vars).get(
-            couch_vars['COUCHDB_BASE_URL'] + designURL + viewURL + query)
-        response.raise_for_status()
-
-    except requests.exceptions.HTTPError as e:
-        if e.response.status_code == 400:
-            print("Bad Request was Sent")
-            return False
-        elif e.response.status_code == 409:
-            print("Document exists in DB")
-            return False
-        else:
-            print(e.__class__.__name__)
-            return False
-    except Exception as e:
-        print('Failure Caused by ', e.__class__.__name__)
-        return False
-    else:
+        # print(response.json())
         print('It eventually worked', response.status_code)
         return response.json()
