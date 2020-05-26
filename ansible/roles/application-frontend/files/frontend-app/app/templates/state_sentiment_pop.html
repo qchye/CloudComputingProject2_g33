@@ -1,0 +1,158 @@
+{% extends 'layout.html' %} {% block body %}
+
+<div class="jumbotron text-center top-space">
+    <h1>I hope you enjoy the website experience so far!</h1>
+</div>
+
+<div>
+    <div class="row form-group border-top">
+        <div class="col-lg-12">
+            <h2 style="text-align: center;">
+                Here, we will go into the analysis of the topic:
+            </h2>
+            <h2 class="sentiment-title-border">
+                <strong>
+                    Is Negative Sentiment towards Gig Economy Companies correlated to the
+                    Elderly Population in States of Australia.
+                </strong>
+            </h2>
+
+            <h3>
+                <strong>Note:</strong> The sentiment value will be based on a certain
+                gig economy company that you are able to choose below.
+            </h3>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="row form-group border-top">
+        <div class="col-lg-12">
+            <h3>
+                First, we learn about the age distribution of population through the
+                median age in each state. The reason why median is chosen for this
+                observation is because it summarises the age midpoint of such big
+                population to give us a basic knowledge of which state has relatively
+                more older people.
+            </h3>
+
+            <img src="{{median_age_path}}" />
+
+            <h3>
+                From the bar chart above, we can see that South Australia and Tasmania
+                have a higher median age which are 41.7 and 42 respectively whereas
+                Northern Territory has 32.2 median age which is the lowest among all of
+                the states in Australia.
+            </h3>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="row form-group border-top">
+        <div class="col-lg-12">
+            <h3>Next, we look at the population of elderly people in each state</h3>
+
+            <img src="{{elderly_pop_path}}" />
+
+            <h3>
+                From the elderly population figures above, we can see that it gives
+                similar result through using median, i.e, South Australia and Tasmania
+                have highest percentage of elderly whereas Northern Territory has the
+                lowest elderly population
+            </h3>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="row form-group border-top">
+        <div class="col-lg-12">
+            <h3>
+                Now, it is time to observe how the
+                <strong>sentiment value (positive or negative)</strong> analysed through
+                the harvested Twitter data based on a gig economy companies correlates
+                with the elderly population in each states.
+            </h3>
+
+            <form action="/sentiment_pop" method="post">
+                <div class="col-lg-10">
+                    <select class="form-control"
+                            name="keyword"
+                            onchange="this.form.submit();">
+                        <option value="" selected>Select a keyword</option>
+                        {% for keyword in keywords_with_data %}
+                        <option value="{{keyword}}">{{keyword}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <img src="{{keyword_sentiment_path}}" alt="" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if generated %}
+<div>
+    <h3>
+        As we observed previously that South Australia and Tasmania have relatively
+        higher proportions of elderly people. We will now dive deeper looking at the
+        sentiment value which is based on the gig economy companies.
+    </h3>
+
+    {% if isHypothesisTrue %}
+    <h3>
+        From the figure above, it is proven that elderly people do have negative
+        sentiment attached towards gig economy in general.
+    </h3>
+
+    {% else %} {% if not isTasNegative %}
+    <h3>
+        In Tasmania, the bar chart shows result of positive feelings from the
+        elderly people which contradicts to the hypothesis we made earlier.
+    </h3>
+    {% endif %} {% if not isSANegative %}
+    <h3>
+        In South Australia, a bigger proportions of the elderly people do possess
+        positive sentiment towards the gig economy which denies the hypothesis we
+        made earlier.
+    </h3>
+    {% endif %}
+
+    <h3>
+        We can see that {{lowestSentState}} has the lowest sentiment value
+        ({{lowestSentValue}}%) which can be positive or negative.
+    </h3>
+
+    {% if (lowestSentState != 'SA') and (lowestSentState != 'TAS') %}
+    <h3>
+        We can't conclude our hypothesis as the elderly population in
+        {{lowestSentState}} is not higher than in South Australia and Tasmania.
+    </h3>
+    {% elif (lowestSentState == 'SA') %} {% if not isTasNegative %}
+    <h3>
+        Even though South Australia has the most negative sentiment, we can't
+        conclude that elderly people do have a much negative feelings towards gig
+        economy because the sentiment value result is positive for Tasmania which
+        has a similar proportions of elderly people as in South Australia.
+    </h3>
+    {% endif %} {% elif (lowestSentState == 'TAS') %} {% if not isSANegative %}
+    <h3>
+        Even though Tasmania has the most negative sentiment, we can't conclude that
+        elderly people do have a much negative feelings towards gig economy because
+        the sentiment value result is positive for South Australia which has a
+        similar proportions of elderly people as in Tasmania.
+    </h3>
+    {% endif %} {% endif %} {% endif %}
+
+    <h3>
+        <strong>Note: </strong>States with 0% of sentiment value should be ignored
+        due to the lack of Twitter data for sentiment analysis
+    </h3>
+</div>
+{% endif %}
+<div class="col-lg-12 bottom-space"></div>
+{% endblock %}

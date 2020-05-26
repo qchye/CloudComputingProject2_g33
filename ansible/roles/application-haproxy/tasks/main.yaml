@@ -22,6 +22,12 @@
     servers_to_deploy: "{{ groups['backend_nodes'] }}"
   when: " 'backend_nodes' in group_names"
 
+- name: Remove existing service
+  command:
+    cmd: docker service rm haproxy-service
+  when: "inventory_hostname == groups['docker_swarm_manager'][0]"
+  ignore_errors: yes
+
 - name: Create Docker service for HA Proxy 
   become: yes
   command: "docker service create 

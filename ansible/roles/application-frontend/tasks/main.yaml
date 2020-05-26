@@ -1,0 +1,92 @@
+# Project           : Gig Economy and its impact in Australia
+# Team              : Group 33
+# City              : Melbourne, Australia
+# Authors           : Qing Feng Chye 770376, Sii Kim Lau 890511, Rohan Jahagirdar 835450
+#                     Yun Liu 1046589, Shorye Chopra 689913
+# Purpose           : Deploy CouchDB Views and the Frontend Application
+---
+- name: Create directory
+  become: yes
+  file:
+    path: "{{ frontend_path }}"
+    recurse: yes
+    state: directory
+  when: " 'frontend_nodes' in group_names"
+
+- name: Copy files over for building couchdb analysis design documents
+  copy:
+    src: "couchdb-analysis"
+    dest: "{{ frontend_path }}"
+  when: " 'frontend_nodes' in group_names"
+
+- name: Copy Gruntfile file
+  template:
+    src: "Gruntfile.js.j2"
+    dest: "{{ frontend_path }}/couchdb-analysis/analysis/Gruntfile.js"
+    mode: '0755'
+  when: " 'frontend_nodes' in group_names"
+
+- name: Build image and with build args
+  become: yes
+  docker_image:
+    name: couchdb-analysis-documents:latest
+    build:
+      path: "{{ frontend_path }}/couchdb-analysis"
+      pull: yes
+      use_config_proxy: yes
+    force_source: yes
+    source: build
+  when: " 'frontend_nodes' in group_names"
+
+- name: Run the creation of analysis documents in couchdb
+  become: yes
+  docker_container:
+    name: couchdb-analysis-documents
+    image: couchdb-analysis-documents:latest
+  when: " 'frontend_nodes' in group_names"
+
+- name: Copy files over for building frontend application
+  copy:
+    src: "frontend-app"
+    dest: "{{ frontend_path }}"
+    owner: root
+    group: root
+    mode: 0755
+  when: " 'frontend_nodes' in group_names"
+
+- name: Copy variables file
+  template:
+    src: "variables.json.j2"
+    dest: "{{ frontend_path }}/frontend-app/app/variables.json"
+    mode: '0755'
+  when: " 'frontend_nodes' in group_names"
+
+- name: Build image and with build args
+  docker_image:
+    name: frontend:latest
+    build:
+      path: "{{ frontend_path }}/frontend-app/"
+      pull: yes
+      use_config_proxy: yes
+    force: yes
+    source: build
+  when: " 'frontend_nodes' in group_names"
+
+- name: Remove existing service
+  command:
+    cmd: docker service rm frontend
+  when: "inventory_hostname == groups['docker_swarm_manager'][0]"
+  ignore_errors: yes
+  
+- name: Create Docker services for Frontend
+  become: yes
+  command: "docker service create 
+    --mode replicated 
+    --replicas 1 
+    --name frontend
+    --publish mode=host,target=5000,published=5000  
+    --constraint node.labels.type==frontend
+    --env FILE_TO_RUN='app.py'
+    {{ service_env_vars }}
+    frontend:latest"
+  when: "inventory_hostname == groups['docker_swarm_manager'][0]"

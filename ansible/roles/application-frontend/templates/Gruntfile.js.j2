@@ -1,0 +1,49 @@
+module.exports = function (grunt) {
+  grunt
+    .initConfig({
+      "couch-compile": {
+        dbs: {
+          files: {
+            "/tmp/aurin-employment-gcc.json": "couchdb/aurin-employment-gcc/*",
+            "/tmp/aurin-employment-sa2.json": "couchdb/aurin-employment-sa2/*",
+            "/tmp/aurin-mean-income.json": "couchdb/aurin-mean-income/*",
+            "/tmp/aurin-population.json": "couchdb/aurin-population/*",
+            "/tmp/twitter.json": "couchdb/twitter/*"          
+          }
+        }
+      },
+      "couch-push": {
+        options: {
+          user: "{{ user }}",
+          pass: "{{ pass }}"
+        },
+        "aurin-employment-gcc": {
+          files: {
+            "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/aurin-employment-gcc" : "/tmp/aurin-employment-gcc.json"
+          }
+        },
+        "aurin-employment-sa2": {
+          files: {
+            "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/aurin-employment-sa2" : "/tmp/aurin-employment-sa2.json"
+          }
+        },
+        "aurin-mean-income": {
+          files: {
+            "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/aurin-mean-income" : "/tmp/aurin-mean-income.json"
+          }
+        },
+        "aurin-population": {
+          files: {
+            "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/aurin-population" : "/tmp/aurin-population.json"
+          }
+        },
+        twitter: {
+          files:{
+            "http://{{ swarm_manager_ip}}:{{ ha_proxy_port_couchdb }}/{{ couch_db_twitter_database_name }}" : "/tmp/twitter.json"
+          }
+        }
+      }
+    });
+  console.log(JSON.stringify(grunt.config.get()));
+  grunt.loadNpmTasks("grunt-couch");
+};

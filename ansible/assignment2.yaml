@@ -54,6 +54,11 @@
 
 #   roles:
 #     - role: helper-inventory-populator
+#       tags:
+#         - haproxy
+#         - harvester
+#         - couchdb
+#         - frontend
 
 - hosts: SWARM
   vars_files:
@@ -70,4 +75,7 @@
         - harvester
     - role: application-couchdb
       tags:
-      - couchdb
+        - couchdb
+    - role: application-frontend
+      tags:
+        - frontend

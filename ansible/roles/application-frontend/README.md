@@ -17,4 +17,4 @@ To run the docker image execute the following commands:
 docker run -e FILE_TO_RUN=app.py -p 5000:5000 test
 ```
 
-## PS: Please add all JS scripts/function to the [Static](ansible/roles/application-frontend/files/app/static/js) folder
+## PS: Please add all JS scripts/function to the [Static](ansible/roles/application-frontend/files/frontend-app/app/script) folder

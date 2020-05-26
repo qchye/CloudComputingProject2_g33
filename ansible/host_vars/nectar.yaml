@@ -42,6 +42,13 @@ security_groups:
         port_range_min: 8080
         port_range_max: 8080
         remote_ip_prefix: 0.0.0.0/0
+  - name: frontend
+    description: "Security group for Frontend http access"
+    sg_rules:
+      - protocol: tcp
+        port_range_min: 5000
+        port_range_max: 5000
+        remote_ip_prefix: 0.0.0.0/0
   - name: CouchDB
     description: "Security group for CouchDB"
     sg_rules:

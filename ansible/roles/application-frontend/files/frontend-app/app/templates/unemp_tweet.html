@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="jumbotron text-center top-space">
+    <h1>Relationship between Unemployment and Gig Economy related tweets</h1>
+    <p class="lead">presented by Forever_33</p>
+</div>
+
+<div>
+
+    {% if session.logged_in == NULL %}
+    <div class="row form-group border-top">
+        <br /><br />
+        <div class="col-lg-6 border">
+            <figure>
+                <img src="{{ unemp_year }}" alt="Image" height="500" width="500" />
+                <figcaption>Fig.1: The first graph represents the change in unemployment numbers in Australia between 2010 to 2017</figcaption>
+            </figure>
+            
+        </div>
+        
+        <div class="col-lg-6 border">
+            <figure>
+                <img src="{{ tweet_year_state }}" alt="Image" height="500" width="500" />
+                <figcaption>Fig.2: The second graph represents the number of tweets about the gig economy in the same time frame</figcaption>
+            </figure>
+        </div>
+    </div>
+    <div>
+
+    </div>
+
+    <div class="row form-group border-top">
+        <h4> 
+            The trend here is not obvious, but if we look deeper, we can observe that
+            while the unemployment rises steeply from 2011 to 2015, the rate starts
+            decelerating in 2014. This coincides with the albeit slight acceleration 
+            in the number of tweets until 2015 and 2016 where the rise continues to 
+            accelerate. This rise in tweets could be linked to, initially, a deceleration in 
+            unemployment and finally a reduction. The obvious explanation to this is that
+            the gig economy is funding those added jobs. It is also known that the gig
+            economy is on the rise in recent years, and the rise in the tweets could
+            represent the rise in demand for the services that these gig economy services
+            provide. This in turn means that there is an increased opportunity for
+            employment in the businesses that offer these services. As a result, we see
+            the unemployment numbers begin to curb as the popularity of the gig economy
+            rises.
+        </h4>
+
+    {% endif %}
+        <div class="col-lg-12 bottom-space"></div>
+</div>
+
+{% endblock %}

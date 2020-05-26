@@ -4,11 +4,9 @@
 
 [docker_swarm_manager]
 
-
 [docker_swarm_worker]
 
 [backend_nodes]
-
 
 [frontend_nodes]
 
